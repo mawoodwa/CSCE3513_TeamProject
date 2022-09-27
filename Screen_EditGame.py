@@ -1,20 +1,33 @@
 import tkinter as tk
 from tkinter import ttk
+from Menu_AddPlayerName import *
+from Menu_AddCodename import *
+from Menu_UsePrevCodename import *
+from Menu_DeleteDBConfirm import *
+from Database import *
 
 class Screen_EditGame(tk.Frame):
     PLAYERSELECT = 0
-    PLAYERINS = 1
+    PLAYERNAME = 1
+    ASKUSEPREVCODE = 2
+    PLAYERCODENAME = 3
+    DELETEDBCONFIRM = 4
+
     def __init__(self, tkRoot):
         super().__init__(tkRoot)
         self.root = tkRoot
         
+        self.database = Database()
+        self.database.openConnection()
         self.strDefaultFont = "Arial"
         self.tupleArrowPos = (0,0)
         self.intMenu = self.PLAYERSELECT
-        self.intPlayerEntries = 19
+        self.intPlayerEntries = 15
+        self.listPlayerInfo = [0,"","",""]
         
         self.createScreen()
         self.gridify()
+        self.showMainMenu()
     
     # Size control - prevent widget from over-expanding outside grid cell
     # This should be applied to most widgets
@@ -30,6 +43,10 @@ class Screen_EditGame(tk.Frame):
         
     def showSelf(self):
         self.mainFrame.grid()
+        
+    def closeDB(self):
+        print("Closing DB...")
+        self.database.closeDB_NoCommit()
         
     def removeArrowAtPos(self):
         # Red
@@ -56,35 +73,151 @@ class Screen_EditGame(tk.Frame):
             
     def getPlayerAtArrow(self):
         if self.tupleArrowPos[0] < 1: #Red
-            return (self.rLabelPlayerName[self.tupleArrowPos[1]]["text"], 
-                self.rLabelCodeName[self.tupleArrowPos[1]]["text"])
+            listStrPlayerName = self.rLabelPlayerName[self.tupleArrowPos[1]]["text"].split()
+            if listStrPlayerName == [] or listStrPlayerName == None:
+                listStrPlayerName = ["",""]
+            return (listStrPlayerName[0], 
+                listStrPlayerName[1])
+                #self.rLabelCodeName[self.tupleArrowPos[1]]["text"]
         else: #Green
-            return (self.gLabelPlayerName[self.tupleArrowPos[1]]["text"], 
-                self.gLabelCodeName[self.tupleArrowPos[1]]["text"])
-            
-            
-    def openInsPlayer(self):
-        self.intMenu = self.PLAYERINS
-        self.frameInsP.tkraise()
-        self.entryPlayerName["state"]="normal"
-        tuplePlayerAtArrow = self.getPlayerAtArrow()
-        self.entryPlayerName.insert(0,tuplePlayerAtArrow[0])
-        self.entryPlayerName.focus_set()
-        self.entryPlayerCodeName["state"]="normal"
-        self.entryPlayerCodeName.insert(0,tuplePlayerAtArrow[1])
-        self.buttonSubmit["state"]="normal"
-        self.root.update()
+            listStrPlayerName = self.gLabelPlayerName[self.tupleArrowPos[1]]["text"].split()
+            if listStrPlayerName == [] or listStrPlayerName == None:
+                listStrPlayerName = ["",""]
+            return (listStrPlayerName[0], 
+                listStrPlayerName[1])
+                
+    def changeMenu(self, newMenu):
+        print("Not implemented!")
         
-    def closeInsPlayer(self):
+    def submitYes_UsePrevCodename(self):
         self.intMenu = self.PLAYERSELECT
-        self.entryPlayerName.delete(0,tk.END)
-        self.entryPlayerName["state"]="disabled"
-        self.entryPlayerCodeName.delete(0,tk.END)
-        self.entryPlayerCodeName["state"]="disabled"
-        self.buttonSubmit["state"]="disabled"
-        self.frameTeamRed.tkraise()
-        self.frameTeamGreen.tkraise()
-        self.root.update()
+        self.menuUsePrevCodename.closeMenu()
+        self.menuUsePrevCodename.hideSelf()
+        self.addPlayer(self.listPlayerInfo[1] + " " + self.listPlayerInfo[2], self.listPlayerInfo[3])
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+        
+    def submitNo_UsePrevCodename(self):
+        self.intMenu = self.PLAYERCODENAME
+        self.menuUsePrevCodename.closeMenu()
+        self.menuUsePrevCodename.hideSelf()
+        self.menuAddCodename.openMenu()
+        self.menuAddCodename.showSelf()
+        
+    def openDeleteDBConfirmMenu(self):
+        self.intMenu = self.DELETEDBCONFIRM
+        self.menuDeleteDBConfirm.showSelf()
+        self.menuDeleteDBConfirm.openMenu()
+        
+    def submitYes_DeleteDB(self):
+        self.intMenu = self.PLAYERSELECT
+        self.menuDeleteDBConfirm.closeMenu()
+        self.menuDeleteDBConfirm.hideSelf()
+        print("Deleting all rows in DB...")
+        self.database.deleteAllRows()
+        self.database.commit()
+        rows = self.database.getAllRows()
+        print(rows)
+        self.clearAllPlayers()
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+        
+    def submitNo_DeleteDB(self):
+        self.intMenu = self.PLAYERSELECT
+        self.menuDeleteDBConfirm.closeMenu()
+        self.menuDeleteDBConfirm.hideSelf()
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+        
+    def submitPlayerName(self, strFirstName, strLastName):
+        self.menuAddPlayerName.closeMenu()
+        self.menuAddPlayerName.hideSelf()
+        self.listPlayerInfo[1] = strFirstName
+        self.listPlayerInfo[2] = strLastName
+        # Check DB for name
+        playerRow = self.database.findPlayerByName(strFirstName,strLastName)
+        if len(playerRow) < 1:
+            print("Player not found")
+            self.intMenu = self.PLAYERCODENAME
+            self.menuAddCodename.openMenu()
+            self.menuAddCodename.showSelf()
+        else:
+            print(playerRow[0])
+            self.intMenu = self.ASKUSEPREVCODE
+            self.menuUsePrevCodename.openMenu()
+            self.menuUsePrevCodename.showSelf()
+            self.listPlayerInfo[0] = playerRow[0][0]
+            self.listPlayerInfo[3] = playerRow[0][3]
+        
+    def submitCodeName(self, strCodeName):
+        self.listPlayerInfo[3] = strCodeName
+        self.menuAddCodename.closeMenu()
+        self.menuAddCodename.hideSelf()
+        print(self.listPlayerInfo)
+        if self.listPlayerInfo[0] == 0:
+            row = self.database.getLastId()
+            id = 0
+            if len(row) == 0:
+                id = 1
+            else:
+                id = row[0][0] + 1
+            self.listPlayerInfo[0] = id
+            if self.database.findId(id) == []:
+                self.database.insertPlayer(self.listPlayerInfo)
+                self.database.commit()
+        else:
+            id = self.listPlayerInfo[0]
+            if self.database.findId(id) != []:
+                self.database.updateUsingId(self.listPlayerInfo)
+                self.database.commit()
+        rows = self.database.getAllRows()
+        print(rows)
+        self.addPlayer(self.listPlayerInfo[1] + " " + self.listPlayerInfo[2],
+                        self.listPlayerInfo[3])
+        self.intMenu = self.PLAYERSELECT
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+            
+    def openAddPlayerName(self):
+        self.intMenu = self.PLAYERNAME# keep
+        tuplePlayerAtArrow = self.getPlayerAtArrow()# keep
+        self.menuAddPlayerName.openMenu(tuplePlayerAtArrow)
+        self.menuAddPlayerName.showSelf()
+        self.root.update()# keep
+        
+    def closeAddPlayerName(self):
+        self.menuAddPlayerName.closeMenu()
+        self.menuAddPlayerName.hideSelf()
+        
+    def closeInsPlayerWithoutSave(self):
+        self.intMenu = self.PLAYERSELECT# keep
+        self.menuAddPlayerName.closeMenu()
+        self.menuAddPlayerName.hideSelf()
+        self.menuAddCodename.closeMenu()
+        self.menuAddCodename.hideSelf()
+        self.root.update()# keep
+        
+    def openAddCodename(self):
+        self.intMenu = self.PLAYERCODENAME # keep
+        self.menuAddCodename.openMenu()
+        self.root.update()# keep
+        
+    def closeAddCodename(self):
+        self.intMenu = self.PLAYERSELECT# keep
+        self.menuAddCodename.closeMenu()
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+        
+    def showMainMenu(self):
+        self.intMenu = self.PLAYERSELECT# keep
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
         
     def addPlayer(self, strPlayer, strCode):
         if self.tupleArrowPos[0] == 0:
@@ -97,7 +230,11 @@ class Screen_EditGame(tk.Frame):
             self.gLabelCodeName[self.tupleArrowPos[1]]["text"] = strCode
             self.gCheckboxVar[self.tupleArrowPos[1]].set(True)
             self.gCheckboxC[self.tupleArrowPos[1]].select()
+        self.listPlayerInfo = [0,"","",""]
         self.root.update()
+        
+    def switchToCodenameCheck(self):
+        print("codenamecheck")
         
     def deletePlayer(self, event=None):
         if self.tupleArrowPos[0] == 0:
@@ -112,34 +249,16 @@ class Screen_EditGame(tk.Frame):
             self.gCheckboxC[self.tupleArrowPos[1]].deselect()
         self.root.update()
         
-    def showInsertMenuError(self,text):
-        if len(self.labelInsPError["text"]) > 0:
-            self.labelInsPError["text"] = self.labelInsPError["text"] + "\nError: " + text
-        else:
-            self.labelInsPError["text"] = "Error: " + text
-
-    def clearInsertMenuError(self):
-        self.labelInsPError["text"] = ""
-        
-    def addPlayerFromMenu(self,event=None):
-        intMinPNameLen = 2  # Player Name
-        intMaxPNameLen = 30 # Player Name
-        intMinCNameLen = 2  # Code Name
-        intMaxCNameLen = 30 # Code Name
-    
-        self.clearInsertMenuError()
-        intLenPlayerName = len(self.entryPlayerName.get())
-        intLenCodeName = len(self.entryPlayerCodeName.get())
-        boolPlayerNameInvalid = intLenPlayerName < intMinPNameLen or intLenPlayerName > intMaxPNameLen
-        boolCodeNameInvalid = intLenCodeName < intMinCNameLen or intLenCodeName > intMaxCNameLen
-        if boolPlayerNameInvalid:
-            self.showInsertMenuError("Player name must be between 2 - 30 characters!")
-        if boolCodeNameInvalid:
-            self.showInsertMenuError("Code name must be between 2 - 30 characters!")
-        if not boolPlayerNameInvalid and not boolCodeNameInvalid:
-            self.clearInsertMenuError()
-            self.addPlayer(self.entryPlayerName.get(), self.entryPlayerCodeName.get())
-            self.closeInsPlayer()
+    def clearAllPlayers(self):
+        for i in range(self.intPlayerEntries):
+            self.gLabelPlayerName[i]["text"] = ""
+            self.gLabelCodeName[i]["text"] = ""
+            self.gCheckboxVar[i].set(False)
+            self.gCheckboxC[i].deselect()
+            self.rLabelPlayerName[i]["text"] = ""
+            self.rLabelCodeName[i]["text"] = ""
+            self.rCheckboxVar[i].set(False)
+            self.rCheckboxC[i].deselect()
             
     def createScreen(self):
         self.createMainFrame()
@@ -148,82 +267,50 @@ class Screen_EditGame(tk.Frame):
         self.createLabelGMode()
         self.createFKeys()
         self.createLabelFooter()
-        self.createInsPMenu()
+        self.createAddPlayerMenu()
+        self.createAddCodenameMenu()
+        self.createUsePrevCodenameMenu()
+        self.createDeleteDBConfirmMenu()
         
-    def createInsPMenu(self):
-        strBorderColor = "#5b5bc3"
-        strBGColor = "#000000"
-        strTextcolorError = "#FF0000" # True Red
-        strTextcolorMain = "#FFFFFF" # Full White
-        strFont = self.strDefaultFont
-        intTextsizeHead = 20
-        intTextsizeError = 14
-        intTextsizeMain = 16
-    
-        self.frameInsP = tk.Frame(self.mainFrame, bg=strBorderColor)
-        self.propagateWidget(self.frameInsP)
-        self.frameInsPInterior = tk.Frame(self.frameInsP, bg=strBGColor)
-        self.labelInsPHead = tk.Label(self.frameInsPInterior,
-            text="Insert Player",
-            fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeHead))
-        self.labelInsPError = tk.Label(self.frameInsPInterior,
-            text="",
-            fg= strTextcolorError,bg=strBGColor,font=(strFont,intTextsizeError))
-        self.labelPlayerName = tk.Label(self.frameInsPInterior,
-            text="Player Name:",
-            fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeMain))
-        self.entryPlayerName = tk.Entry(self.frameInsPInterior,
-            state="disabled",font=(strFont,intTextsizeMain))
-        self.labelPlayerCodeName = tk.Label(self.frameInsPInterior,
-            text="Player Code Name:",
-            fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeMain))
-        self.entryPlayerCodeName = tk.Entry(self.frameInsPInterior,
-            state="disabled",font=(strFont,intTextsizeMain))
-        self.labelHint = tk.Label(self.frameInsPInterior,
-            text="Tab or click to switch between boxes\nClick submit to insert player\nPress Esc to cancel",
-            fg = strTextcolorMain, bg=strBGColor, font=(strFont,intTextsizeMain))
-        self.buttonSubmit = tk.Button(self.frameInsPInterior,
-            text="Submit",
-            command=self.addPlayerFromMenu,
-            state="disabled",
-            fg=strTextcolorMain, bg=strBGColor, font=(strFont, intTextsizeMain))
-        self.buttonSubmit.bind("<Return>",self.addPlayerFromMenu)
+    def createDeleteDBConfirmMenu(self):
+        self.menuDeleteDBConfirm = Menu_DeleteDBConfirm(self.mainFrame, self.submitYes_DeleteDB, self.submitNo_DeleteDB)
+        self.menuDeleteDBConfirm.closeMenu()
+        self.menuDeleteDBConfirm.hideSelf()
         
-    def gridifyInsPMenu(self):
-        intBorderSize = 10
-        self.frameInsPInterior.pack(side="top", fill="both", expand=True, 
-            padx=intBorderSize, pady=intBorderSize)
+    def createAddPlayerMenu(self):
+        self.menuAddPlayerName = Menu_AddPlayerName(self.mainFrame, self.submitPlayerName)
+        self.menuAddPlayerName.closeMenu()
+        self.menuAddPlayerName.hideSelf()
         
-        intFrameInsPCols = 12
-        intFrameInsPRows = 12
+    def createAddCodenameMenu(self):
+        self.menuAddCodename = Menu_AddCodename(self.mainFrame, self.submitCodeName)
+        self.menuAddCodename.closeMenu()
+        self.menuAddCodename.hideSelf()
         
-        for i in range(intFrameInsPCols):
-            self.frameInsPInterior.columnconfigure(i,weight=1,uniform="uniformIns")
-        for i in range(intFrameInsPRows):
-            self.frameInsPInterior.rowconfigure(i,weight=1,uniform="uniformIns")
-        self.labelInsPHead.grid(column=0,row=0,columnspan=10,rowspan=2,sticky="NSEW")
-        self.labelInsPError.grid(column=0,row=2,columnspan=10,rowspan=2,sticky="NEW")
-        self.labelPlayerName.grid(column=0,row=4,columnspan=4,rowspan=2,sticky="SEW")
-        self.entryPlayerName.grid(column=4,row=4,columnspan=6,rowspan=2,sticky="SEW")
-        self.labelPlayerCodeName.grid(column=0,row=6,columnspan=4,rowspan=2,sticky="SEW")
-        self.entryPlayerCodeName.grid(column=4,row=6,columnspan=6,rowspan=2,sticky="SEW")
-        self.labelHint.grid(column=0,row=9,rowspan=3,columnspan=8,padx=10,sticky="NSW")
-        self.buttonSubmit.grid(column=7,row=9,rowspan=2,columnspan=2,sticky="NSEW")
-        self.closeInsPlayer()
+    def createUsePrevCodenameMenu(self):
+        self.menuUsePrevCodename = Menu_UsePrevCodename(self.mainFrame, self.submitYes_UsePrevCodename, self.submitNo_UsePrevCodename)
+        self.menuUsePrevCodename.closeMenu()
+        self.menuUsePrevCodename.hideSelf()
            
     def gridify(self):
         # If either of below are edited, all widgets will need to be repositioned
         # i.e: All calls to grid with row/column updated
         intMainFrameCols = 24
-        intMainFrameRows = 40
+        intMainFrameRows = 42
         # Position F Key - Row
         intPosFKeyRow = 35
         intFKeyRowSpan = 5
         intFKeyColSpan = 2
         
         self.mainFrame.grid(column=0,row=0,sticky="NSEW")
-        self.frameInsP.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
-        self.gridifyInsPMenu()
+        self.menuAddPlayerName.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
+        self.menuAddPlayerName.gridify()
+        self.menuAddCodename.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
+        self.menuAddCodename.gridify()
+        self.menuUsePrevCodename.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
+        self.menuUsePrevCodename.gridify()
+        self.menuDeleteDBConfirm.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
+        self.menuDeleteDBConfirm.gridify()
         #self.mainFrame.pack(side="top", fill="both", expand=True)
         
         for i in range(intMainFrameCols):
@@ -233,13 +320,13 @@ class Screen_EditGame(tk.Frame):
     
         self.labelEditGame.grid(column=0,row=0,columnspan=24,rowspan=2,sticky="SEW")
         
-        self.frameTeamRed.grid(column=2,row=2,columnspan=10, rowspan=32,sticky="NSEW")
+        self.frameTeamRed.grid(column=2,row=2,columnspan=10, rowspan=31,sticky="NSEW")
         self.gridifyRedTBox()
         
-        self.frameTeamGreen.grid(column=12,row=2,columnspan=10, rowspan=32,sticky="NSEW")
+        self.frameTeamGreen.grid(column=12,row=2,columnspan=10, rowspan=31,sticky="NSEW")
         self.gridifyGreenTBox()
             
-        self.labelGameMode.grid(column=9,row=34,columnspan=6,sticky="NSEW")
+        self.labelGameMode.grid(column=7,row=33,columnspan=9,rowspan=2,sticky="NSEW")
         
         self.frameFKey[0].grid(column=0, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan, sticky="NSEW") # F1
         self.frameFKey[1].grid(column=2, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan,sticky="NSEW") # F2
@@ -251,11 +338,11 @@ class Screen_EditGame(tk.Frame):
         self.frameFKey[7].grid(column=22, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan,sticky="NSEW") # F12
         self.gridifyFKeys()
         
-        self.labelFooter.grid(column=0,row=40,columnspan=24,sticky="NSEW")
+        self.labelFooter.grid(column=0,row=40,columnspan=24,rowspan=2,sticky="NSEW")
         
     def gridifyRedTBox(self):
         intRedTFrameCols = 10
-        intRedTFrameRows = 20
+        intRedTFrameRows = 15
         
         for i in range(intRedTFrameCols):
             self.frameTeamRed.columnconfigure(i,weight=1,uniform="uniformRed")
@@ -272,7 +359,7 @@ class Screen_EditGame(tk.Frame):
             
     def gridifyGreenTBox(self):
         intGreenTFrameCols = 10
-        intGreenTFrameRows = 20
+        intGreenTFrameRows = 15
         
         for i in range(intGreenTFrameCols):
             self.frameTeamGreen.columnconfigure(i,weight=1,uniform="uniformGreen")
@@ -426,14 +513,14 @@ class Screen_EditGame(tk.Frame):
             self.frameFKey[i] = tk.Frame(self.mainFrame,bg=strBorderColor)
             self.propagateWidget(self.frameFKey[i])
     
-        self.labelF1 = tk.Label(self.frameFKey[0], text="F1 \nEdit \nGame", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF2 = tk.Label(self.frameFKey[1], text="F2 \nGame \nParameters", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF3 = tk.Label(self.frameFKey[2], text="F3 \nStart \nGame", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF5 = tk.Label(self.frameFKey[3], text="F5 \nPre-\nEntered \nGame", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF7 = tk.Label(self.frameFKey[4], text="F7", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF8 = tk.Label(self.frameFKey[5], text="F8 \nView \nGame", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF10 = tk.Label(self.frameFKey[6], text="F10 \nFlick \nSync", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF11 = tk.Label(self.frameFKey[7], text="F11 \nClear \nGame", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF1 = tk.Label(self.frameFKey[0], text="F1", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF2 = tk.Label(self.frameFKey[1], text="F2", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF3 = tk.Label(self.frameFKey[2], text="F3", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF5 = tk.Label(self.frameFKey[3], text="F5 \nChange \nScreens", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF7 = tk.Label(self.frameFKey[4], text="F7 \nDelete DB \nEntries", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF8 = tk.Label(self.frameFKey[5], text="F8", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF10 = tk.Label(self.frameFKey[6], text="F10", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF11 = tk.Label(self.frameFKey[7], text="F11", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         
         self.propagateWidget(self.labelF1)
         self.propagateWidget(self.labelF2)

@@ -34,7 +34,7 @@ from Screen_Splash import *
 class App(tk.Frame):
     S_SPLASH = 0
     S_EDITGAME = 1
-    S_PLAY = 2
+    S_PLAYGAME = 2
     def __init__(self, tkRoot):
         super().__init__(tkRoot)
         self.root = tkRoot
@@ -43,7 +43,7 @@ class App(tk.Frame):
         # Root Window
         self.root.title("Entry Terminal")
         self.root.geometry("1200x800+0+0") # Originally tested on 1200x800
-        self.root.minsize(1200,700) # Minimum size of window is 1200x700 before scrunching
+        self.root.minsize(1000,700) # Minimum size of window is 1200x700 before scrunching
         #self.root.resizable(False, False)
         
         print("Running for platform: {}".format(platform))
@@ -57,6 +57,9 @@ class App(tk.Frame):
         #    inserting player menu, and other similiar menus
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
+        
+        # Needed for bug with F10 key.
+        self.inputSim = keyboard.Controller()
         
         self.screen_Splash = Screen_Splash(self.root)
         self.screen_Splash.hideSelf()
@@ -90,7 +93,7 @@ class App(tk.Frame):
             self.unloadScreen_Splash()
         elif self.currentScreen == self.S_EDITGAME:
             self.unloadScreen_EditGame()
-        elif self.currentScreen == self.S_PLAY:
+        elif self.currentScreen == self.S_PLAYGAME:
             self.unloadScreen_PlayGame()
         else:
             print("Changing from unknown screen")
@@ -104,9 +107,9 @@ class App(tk.Frame):
             print("Loading Edit Game...")
             self.currentScreen = self.S_EDITGAME
             self.loadScreen_EditGame()
-        elif nextScreen == self.S_PLAY:
+        elif nextScreen == self.S_PLAYGAME:
             print("Loading Play Game...")
-            self.currentScreen = self.S_PLAY
+            self.currentScreen = self.S_PLAYGAME
             self.loadScreen_PlayGame()
         else:
             print("Not a valid screen!")
@@ -133,13 +136,15 @@ class App(tk.Frame):
         self.screen.hideSelf()
         
     def any_changeScreenOnF7(self, key):
-        if key == keyboard.Key.f7:
+        if key == keyboard.Key.f5:
             if self.currentScreen == self.S_SPLASH:
                 self.changeScreens(self.S_EDITGAME)
             elif self.currentScreen == self.S_EDITGAME:
-                self.changeScreens(self.S_PLAY)
-            elif self.currentScreen == self.S_PLAY:
+                self.changeScreens(self.S_PLAYGAME)
+            elif self.currentScreen == self.S_PLAYGAME:
                 self.changeScreens(self.S_SPLASH)
+        if key == keyboard.Key.f10:
+            self.inputSim.press(keyboard.Key.f10)
         
     def editgame_PlayerSelect(self, key):
         if key == keyboard.Key.up:
@@ -150,27 +155,33 @@ class App(tk.Frame):
             self.screen.moveArrow(-1,0)
         elif key == keyboard.Key.right:
             self.screen.moveArrow(1,0)
+            
         if key == keyboard.Key.insert:
-            self.screen.openInsPlayer()
+            self.screen.openAddPlayerName()
         if key == keyboard.Key.delete:
             self.screen.deletePlayer()
             
+        if key == keyboard.Key.f7:
+            self.screen.openDeleteDBConfirmMenu()
+            
     def editgame_PlayerIns(self, key):
         if key == keyboard.Key.esc:
-            self.screen.closeInsPlayer()
+            self.screen.closeInsPlayerWithoutSave()
         
     def on_press(self, key):
         if self.currentScreen == self.S_EDITGAME:
             if self.screen.intMenu == self.screen.PLAYERSELECT:
                 self.editgame_PlayerSelect(key)
                 self.any_changeScreenOnF7(key)
-            elif self.screen.intMenu == self.screen.PLAYERINS:
+            elif self.screen.intMenu != self.screen.PLAYERSELECT:
                 self.editgame_PlayerIns(key)
-        elif self.currentScreen == self.S_PLAY:
+        elif self.currentScreen == self.S_PLAYGAME:
             self.any_changeScreenOnF7(key)
         elif self.currentScreen == self.S_SPLASH:
             self.any_changeScreenOnF7(key)
             
+    def closeDB(self):
+        self.screen_EditGame.closeDB()
         
     def on_release(self, key):
         True==True
@@ -185,6 +196,7 @@ def driver_TK():
     tkRoot = tk.Tk()
     app = App(tkRoot)
     app.mainloop()
+    app.closeDB()
 
 if __name__ == "__main__":
     driver_TK()
