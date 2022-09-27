@@ -24,11 +24,11 @@ class Database():
         self.conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     
     def connectUsingCode(self):
-        self.conn = psycopg2.connect(database="d233p0jtsqkoed",
-                                host="ec2-18-209-78-11.compute-1.amazonaws.com",
-                                user="aecaigvukawtuo",
-                                password="733f400068facaa5291df2d310f45318bf1c49ac06de9c1ae8f7525b1050644d",
-                                port="5432",
+        self.conn = psycopg2.connect(database="db_username",
+                                host="db_host",
+                                user="db_user",
+                                password="db_pass",
+                                port="db_port",
                                 keepalives=1,
                                 keepalives_idle=30,
                                 keepalives_interval=10,
