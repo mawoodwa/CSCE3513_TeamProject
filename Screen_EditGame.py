@@ -442,6 +442,6 @@ class Screen_EditGame(tk.Frame):
         self.propagateWidget(self.labelF7)
         self.propagateWidget(self.labelF8)
         self.propagateWidget(self.labelF10)
-        self.propagateWidget(self.labelF11) 
+        self.propagateWidget(self.labelF11)
 
         
