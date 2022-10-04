@@ -173,7 +173,7 @@ class App(tk.Frame):
         if key == keyboard.Key.delete:
             self.screen.deletePlayer()
             
-        if key == keyboard.Key.f1:
+        if key == keyboard.Key.f5:
             print(self.screen.intMenu)
             self.screen.openMoveToPlayConfirm()
             

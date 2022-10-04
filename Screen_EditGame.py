@@ -553,10 +553,10 @@ class Screen_EditGame(tk.Frame):
             self.frameFKey[i] = tk.Frame(self.mainFrame,bg=strBorderColor)
             self.propagateWidget(self.frameFKey[i])
     
-        self.labelF1 = tk.Label(self.frameFKey[0], text="F1 \nMove to \nPlay", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF1 = tk.Label(self.frameFKey[0], text="F1", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF2 = tk.Label(self.frameFKey[1], text="F2", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF3 = tk.Label(self.frameFKey[2], text="F3", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF5 = tk.Label(self.frameFKey[3], text="F5", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF5 = tk.Label(self.frameFKey[3], text="F5 \nMove to \nPlay", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF7 = tk.Label(self.frameFKey[4], text="F7 \nDelete DB \nEntries", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF8 = tk.Label(self.frameFKey[5], text="F8", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF10 = tk.Label(self.frameFKey[6], text="F10", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
