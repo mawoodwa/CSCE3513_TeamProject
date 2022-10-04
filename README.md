@@ -30,7 +30,7 @@ Be sure to check the Dependency Installation
   * (Linux): If virtual environment addon for python is not installed by default and gives an error, try either "sudo apt install python3.8-venv" or "apt install python3.8-venv", without quotations
 * Activate the virtual environment in CLI: 
   * (Windows): (name of directory)\scripts\activate
-  * (Linux): source (name of directory)/scripts/activate
+  * (Linux): source (name of directory)/bin/activate
 * Install dependencies using pip: pip install -r requirements.txt. If the command fails, try the below instead.
   * For pynput, install via pip: pip install pynput
   * New dependency - psycopg2. Install using pip: pip install psycopg2-binary
