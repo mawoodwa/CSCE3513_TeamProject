@@ -26,7 +26,7 @@ class Screen_EditGame(tk.Frame):
         self.mainFrame.destroy()
         
     def hideSelf(self):
-        self.mainFrame.grid_remove()
+        self.mainFrame.grid_remove() 
         
     def showSelf(self):
         self.mainFrame.grid()
@@ -84,7 +84,7 @@ class Screen_EditGame(tk.Frame):
         self.buttonSubmit["state"]="disabled"
         self.frameTeamRed.tkraise()
         self.frameTeamGreen.tkraise()
-        self.root.update()
+        self.root.update() 
         
     def addPlayer(self, strPlayer, strCode):
         if self.tupleArrowPos[0] == 0:
@@ -442,6 +442,6 @@ class Screen_EditGame(tk.Frame):
         self.propagateWidget(self.labelF7)
         self.propagateWidget(self.labelF8)
         self.propagateWidget(self.labelF10)
-        self.propagateWidget(self.labelF11)
+        self.propagateWidget(self.labelF11) 
 
         
