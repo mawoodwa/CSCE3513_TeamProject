@@ -24,6 +24,7 @@
 # > ... (More to be added)
 
 from sys import platform
+import time
 from pynput import keyboard
 import tkinter as tk
 from tkinter import ttk
@@ -64,6 +65,7 @@ class App(tk.Frame):
         self.screen_Splash = Screen_Splash(self.root)
         self.screen_Splash.hideSelf()
         self.screen_EditGame = Screen_EditGame(self.root)
+        self.screen_EditGame.bind_ChangeToPlay(self.changeToPlay)
         self.screen_EditGame.hideSelf()
         self.screen_PlayGame = Screen_PlayGame(self.root)
         self.screen_PlayGame.hideSelf()
@@ -73,9 +75,10 @@ class App(tk.Frame):
         self.currentScreen = self.S_SPLASH
         self.screen = self.screen_Splash
         self.screen.showSelf()
+        self.idRootAfter = self.root.after(3000, self.showSplashFor3Sec)
         
         self.startInputListener()
-        self.changeScreens(self.S_EDITGAME)
+        self.changeScreens(self.S_SPLASH)
     
     # Size control - prevent widget from over-expanding outside grid cell
     # This should be applied to most widgets
@@ -87,6 +90,10 @@ class App(tk.Frame):
         self.unloadCurrentScreen()
         self.loadScreen(nextScreen)
         self.root.update()
+        
+    # Used to bind in Screen_EditGame
+    def changeToPlay(self):
+        self.changeScreens(self.S_PLAYGAME)
             
     def unloadCurrentScreen(self):
         if self.currentScreen == self.S_SPLASH:
@@ -135,14 +142,19 @@ class App(tk.Frame):
     def unloadScreen_PlayGame(self):
         self.screen.hideSelf()
         
+    def showSplashFor3Sec(self):
+        print("Waiting 3 seconds...")
+        self.root.after_cancel(self.idRootAfter)
+        self.changeScreens(self.S_EDITGAME)
+        
     def any_changeScreenOnF7(self, key):
-        if key == keyboard.Key.f5:
-            if self.currentScreen == self.S_SPLASH:
-                self.changeScreens(self.S_EDITGAME)
-            elif self.currentScreen == self.S_EDITGAME:
-                self.changeScreens(self.S_PLAYGAME)
-            elif self.currentScreen == self.S_PLAYGAME:
-                self.changeScreens(self.S_SPLASH)
+        #if key == keyboard.Key.f5:
+        #    if self.currentScreen == self.S_SPLASH:
+        #        self.changeScreens(self.S_EDITGAME)
+        #    elif self.currentScreen == self.S_EDITGAME:
+        #        self.changeScreens(self.S_PLAYGAME)
+        #    elif self.currentScreen == self.S_PLAYGAME:
+        #        self.changeScreens(self.S_SPLASH)
         if key == keyboard.Key.f10:
             self.inputSim.press(keyboard.Key.f10)
         
@@ -160,6 +172,10 @@ class App(tk.Frame):
             self.screen.openAddPlayerName()
         if key == keyboard.Key.delete:
             self.screen.deletePlayer()
+            
+        if key == keyboard.Key.f1:
+            print(self.screen.intMenu)
+            self.screen.openMoveToPlayConfirm()
             
         if key == keyboard.Key.f7:
             self.screen.openDeleteDBConfirmMenu()

@@ -4,6 +4,7 @@ from Menu_AddPlayerName import *
 from Menu_AddCodename import *
 from Menu_UsePrevCodename import *
 from Menu_DeleteDBConfirm import *
+from Menu_MoveToPlayConfirm import *
 from Database import *
 
 class Screen_EditGame(tk.Frame):
@@ -12,6 +13,7 @@ class Screen_EditGame(tk.Frame):
     ASKUSEPREVCODE = 2
     PLAYERCODENAME = 3
     DELETEDBCONFIRM = 4
+    MOVETOPLAYCONFIRM = 5
 
     def __init__(self, tkRoot):
         super().__init__(tkRoot)
@@ -132,6 +134,23 @@ class Screen_EditGame(tk.Frame):
         self.frameTeamGreen.tkraise()# keep
         self.root.update()# keep
         
+    def bind_ChangeToPlay(self, mFunc):
+        self.methodChangeToPlay = mFunc
+        
+    def submitYes_MoveToPlay(self):
+        self.intMenu = self.PLAYERSELECT
+        self.menuMoveToPlayConfirm.closeMenu()
+        self.menuMoveToPlayConfirm.hideSelf()
+        self.methodChangeToPlay()
+        
+    def submitNo_MoveToPlay(self):
+        self.intMenu = self.PLAYERSELECT
+        self.menuMoveToPlayConfirm.closeMenu()
+        self.menuMoveToPlayConfirm.hideSelf()
+        self.frameTeamRed.tkraise()# keep
+        self.frameTeamGreen.tkraise()# keep
+        self.root.update()# keep
+        
     def submitPlayerName(self, strFirstName, strLastName):
         self.menuAddPlayerName.closeMenu()
         self.menuAddPlayerName.hideSelf()
@@ -213,6 +232,12 @@ class Screen_EditGame(tk.Frame):
         self.frameTeamGreen.tkraise()# keep
         self.root.update()# keep
         
+    def openMoveToPlayConfirm(self):
+        self.intMenu = self.MOVETOPLAYCONFIRM
+        self.menuMoveToPlayConfirm.showSelf()
+        self.menuMoveToPlayConfirm.openMenu()
+        self.root.update()
+        
     def showMainMenu(self):
         self.intMenu = self.PLAYERSELECT# keep
         self.frameTeamRed.tkraise()# keep
@@ -271,6 +296,10 @@ class Screen_EditGame(tk.Frame):
         self.createAddCodenameMenu()
         self.createUsePrevCodenameMenu()
         self.createDeleteDBConfirmMenu()
+        self.createMoveToPlayConfirmMenu()
+        
+    def createMoveToPlayConfirmMenu(self):
+        self.menuMoveToPlayConfirm = Menu_MoveToPlayConfirm(self.mainFrame, self.submitYes_MoveToPlay, self.submitNo_MoveToPlay)
         
     def createDeleteDBConfirmMenu(self):
         self.menuDeleteDBConfirm = Menu_DeleteDBConfirm(self.mainFrame, self.submitYes_DeleteDB, self.submitNo_DeleteDB)
@@ -299,7 +328,7 @@ class Screen_EditGame(tk.Frame):
         intMainFrameRows = 42
         # Position F Key - Row
         intPosFKeyRow = 35
-        intFKeyRowSpan = 5
+        intFKeyRowSpan = 6
         intFKeyColSpan = 2
         
         self.mainFrame.grid(column=0,row=0,sticky="NSEW")
@@ -311,6 +340,8 @@ class Screen_EditGame(tk.Frame):
         self.menuUsePrevCodename.gridify()
         self.menuDeleteDBConfirm.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
         self.menuDeleteDBConfirm.gridify()
+        self.menuMoveToPlayConfirm.grid(column=6,row=8,columnspan=12,rowspan=20,sticky="NSEW")
+        self.menuMoveToPlayConfirm.gridify()
         #self.mainFrame.pack(side="top", fill="both", expand=True)
         
         for i in range(intMainFrameCols):
@@ -325,8 +356,9 @@ class Screen_EditGame(tk.Frame):
         
         self.frameTeamGreen.grid(column=12,row=2,columnspan=10, rowspan=31,sticky="NSEW")
         self.gridifyGreenTBox()
-            
-        self.labelGameMode.grid(column=7,row=33,columnspan=9,rowspan=2,sticky="NSEW")
+           
+        # Remember to remove "create" for this too
+        # self.labelGameMode.grid(column=7,row=33,columnspan=9,rowspan=2,sticky="NSEW")
         
         self.frameFKey[0].grid(column=0, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan, sticky="NSEW") # F1
         self.frameFKey[1].grid(column=2, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan,sticky="NSEW") # F2
@@ -338,7 +370,7 @@ class Screen_EditGame(tk.Frame):
         self.frameFKey[7].grid(column=22, row=intPosFKeyRow, rowspan=intFKeyRowSpan, columnspan=intFKeyColSpan,sticky="NSEW") # F12
         self.gridifyFKeys()
         
-        self.labelFooter.grid(column=0,row=40,columnspan=24,rowspan=2,sticky="NSEW")
+        self.labelFooter.grid(column=0,row=41,columnspan=24,rowspan=1,sticky="NSEW")
         
     def gridifyRedTBox(self):
         intRedTFrameCols = 10
@@ -436,7 +468,10 @@ class Screen_EditGame(tk.Frame):
             self.rCheckboxVar[i] = tk.BooleanVar(value=False)
             self.rCheckboxC[i] = tk.Checkbutton(self.frameTeamRed, 
                 text=str(i+1),
-                fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intCBoxFontSize),onvalue=1,offvalue=0,state="disabled",variable=self.rCheckboxVar[i]) 
+                highlightthickness=0,bd=0,
+                fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intCBoxFontSize),
+                onvalue=1,offvalue=0,
+                state="disabled",variable=self.rCheckboxVar[i]) 
             self.rLabelPlayerName[i] = tk.Label(self.frameTeamRed, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             self.rLabelCodeName[i] = tk.Label(self.frameTeamRed, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             
@@ -469,7 +504,12 @@ class Screen_EditGame(tk.Frame):
         for i in range(self.intPlayerEntries):
             self.gLabelArrow[i] = tk.Label(self.frameTeamGreen, text="", fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intArrowFontSize))
             self.gCheckboxVar[i] = tk.BooleanVar(value=False)
-            self.gCheckboxC[i] = tk.Checkbutton(self.frameTeamGreen, text=str(i+1),fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intCBoxFontSize), onvalue=1,offvalue=0, state="disabled", variable=self.gCheckboxVar[i]) 
+            self.gCheckboxC[i] = tk.Checkbutton(self.frameTeamGreen, 
+                text=str(i+1),
+                highlightthickness=0,bd=0,
+                fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intCBoxFontSize), 
+                onvalue=1,offvalue=0, 
+                state="disabled", variable=self.gCheckboxVar[i]) 
             self.gLabelPlayerName[i] = tk.Label(self.frameTeamGreen, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             self.gLabelCodeName[i] = tk.Label(self.frameTeamGreen, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             
@@ -513,10 +553,10 @@ class Screen_EditGame(tk.Frame):
             self.frameFKey[i] = tk.Frame(self.mainFrame,bg=strBorderColor)
             self.propagateWidget(self.frameFKey[i])
     
-        self.labelF1 = tk.Label(self.frameFKey[0], text="F1", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF1 = tk.Label(self.frameFKey[0], text="F1 \nMove to \nPlay", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF2 = tk.Label(self.frameFKey[1], text="F2", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF3 = tk.Label(self.frameFKey[2], text="F3", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
-        self.labelF5 = tk.Label(self.frameFKey[3], text="F5 \nChange \nScreens", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
+        self.labelF5 = tk.Label(self.frameFKey[3], text="F5", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF7 = tk.Label(self.frameFKey[4], text="F7 \nDelete DB \nEntries", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF8 = tk.Label(self.frameFKey[5], text="F8", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))
         self.labelF10 = tk.Label(self.frameFKey[6], text="F10", fg=strTextColor, bg=strBGColor, font=(strFontStyle,intFontSize))

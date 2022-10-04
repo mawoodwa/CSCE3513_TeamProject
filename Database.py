@@ -6,7 +6,7 @@ class Database():
         print("Initializing Database Object...")
         self.conn = None
         self.cursor = None
-        self.strSelectedTable = "test"
+        self.strSelectedTable = "player"
         
     def openConnection(self):
         try:
@@ -105,13 +105,13 @@ class Database():
         return False
         
     def findPlayerByName(self,firstName, lastName):
-        data = (firstName, lastName)
+        data = (firstName.upper(), lastName.upper())
         self.cursor.execute("""
         SELECT person.id, person.first_name, person.last_name, person.codename
         FROM {table} AS person
             INNER JOIN {table} AS returnValue
-            ON person.first_name = %s
-            AND person.last_name = %s
+            ON UPPER(person.first_name) = %s
+            AND UPPER(person.last_name) = %s
         GROUP BY person.id, person.first_name, person.last_name, person.codename
         ORDER BY person.id, person.first_name, person.last_name, person.codename""".format(table=self.strSelectedTable), data)
         return self.cursor.fetchall()
