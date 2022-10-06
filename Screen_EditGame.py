@@ -41,7 +41,7 @@ class Screen_EditGame(tk.Frame):
         self.mainFrame.destroy()
         
     def hideSelf(self):
-        self.mainFrame.grid_remove()
+        self.mainFrame.grid_remove() 
         
     def showSelf(self):
         self.mainFrame.grid()
@@ -237,6 +237,14 @@ class Screen_EditGame(tk.Frame):
         self.menuMoveToPlayConfirm.showSelf()
         self.menuMoveToPlayConfirm.openMenu()
         self.root.update()
+        self.entryPlayerName.delete(0,tk.END)
+        self.entryPlayerName["state"]="disabled"
+        self.entryPlayerCodeName.delete(0,tk.END)
+        self.entryPlayerCodeName["state"]="disabled"
+        self.buttonSubmit["state"]="disabled"
+        self.frameTeamRed.tkraise()
+        self.frameTeamGreen.tkraise()
+        self.root.update() 
         
     def showMainMenu(self):
         self.intMenu = self.PLAYERSELECT# keep
