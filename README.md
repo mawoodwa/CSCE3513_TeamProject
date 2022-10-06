@@ -31,7 +31,7 @@ Be sure to check the Dependency Installation
   * (Linux): source (name of directory)/bin/activate
 * Install dependencies using pip: pip install -r requirements.txt. If the command fails, try the below instead.
   * For pynput, install via pip: pip install pynput
-  * New dependency - psycopg2. Install using pip: pip install psycopg2-binary
+  * For psycopg2. Install using pip as well: pip install psycopg2-binary
 * Set the database url in your virtual environment. 
   * (Windows): set DATABASE_URL=databasetokenhere . 
   * (Linux): export DATABASE_URL=databasetokenhere .
