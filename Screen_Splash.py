@@ -37,5 +37,5 @@ class Screen_Splash(tk.Frame):
         
     def gridify(self):
         self.mainFrame.grid(column=0,row=0,sticky="NSEW")
-        self.labelSplash.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
+        self.labelSplash.place(relx=0.5,rely=0.5,anchor=tk.CENTER) 
         
