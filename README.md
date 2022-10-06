@@ -1,8 +1,6 @@
-# Dev Test Branch (10/04/22)
+# Main Branch (10/06/22)
 
 ## What's New?
-This is the Development Test Branch! This branch is dedicated to experimental changes before they are pushed to the main branch. 
-This is the second iteration of major changes.
 Some of the changes to this iteration are:
 * Added 3 second splash screen
 * Changed Database to work correctly with main Heroku repository
@@ -26,9 +24,9 @@ Be sure to check the Dependency Installation
 * Tkinter should be installed with python3 by default
 * If not installed on linux, use command: sudo apt-get install python-tk
 * Download github devtest repository, either using Git or download ZIP file. Unpack somewhere on your computer and go into the directory in commandline: cd (full directory path)
-* Set up a virtual environment for python: python -m venv (name of directory here)
+* (Optional) Set up a virtual environment for python: python -m venv (name of directory here)
   * (Linux): If virtual environment addon for python is not installed by default and gives an error, try either "sudo apt install python3.8-venv" or "apt install python3.8-venv", without quotations
-* Activate the virtual environment in CLI: 
+* (Optional) Activate the virtual environment in CLI: 
   * (Windows): (name of directory)\scripts\activate
   * (Linux): source (name of directory)/bin/activate
 * Install dependencies using pip: pip install -r requirements.txt. If the command fails, try the below instead.
