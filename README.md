@@ -13,7 +13,6 @@ Be sure to check the Dependency Installation
 
 
 ## Basics
-* 2nd devtest version of University of Arkansas CSCE 3513 Team Project - Laser Tag program
 * Intended only for use in Team 8 of UArk CSCE 3513, Fall 2022
 * Program is incomplete. Major bugs are to be expected
 * Program has currently only been tested on Windows 10 and Ubuntu (Linux Cinnamon Mint) so far
