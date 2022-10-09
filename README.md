@@ -30,10 +30,16 @@ Be sure to check the Dependency Installation
   * (Linux): source (name of directory)/bin/activate
 * Install dependencies using pip: pip install -r requirements.txt. If the command fails, try the below instead.
   * For pynput, install via pip: pip install pynput
-  * For psycopg2. Install using pip as well: pip install psycopg2-binary
+  * For psycopg2, install using pip as well: pip install psycopg2-binary
 * Set the database url in your virtual environment. 
   * (Windows): set DATABASE_URL=databasetokenhere . 
   * (Linux): export DATABASE_URL=databasetokenhere .
+ 
+## Database Token, Security, and Information
+* Database token: postgres://afnatpikeuzgvb:b9929e6440f676fdb770c4962b288c7b6d284d74e670c87c0d064f8b11d9bc2d@ec2-34-195-163-197.compute-1.amazonaws.com:5432/dd30p75admf175
+
+* The database token (usually called database url or URI)  may expire after a certain time outside our control unfortuanately. This is mentioned in Heroku that it will change periodically automatically. If for whatever reason it expires, please email myself (ctj011@uark.edu) or one of the other team members to send you the new database token.
+* Regarding security: The database token / database url would normally not be shared on a public website such as GitHub; however, by the request of the professor for ease-of-access sake, and since this is an academic learning environment, it is included in this readme. It is intended that only the graders and students access the database.
 
 ## How to
 * Run program by typing in commandline (without quotations): "python main.py"
