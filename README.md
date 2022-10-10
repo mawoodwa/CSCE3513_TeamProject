@@ -1,11 +1,9 @@
-# Main Branch (10/06/22)
+# Dev Test (10/09/22)
 
 ## What's New?
 Some of the changes to this iteration are:
-* Added 3 second splash screen
-* Changed Database to work correctly with main Heroku repository
-* Move To Play Screen confirmation menu
-* ... and more
+* Fixed previous codename found not showing in UI
+* Harded database url into code
 
 **MAJOR BUGS ARE TO BE EXPECTED**
 
