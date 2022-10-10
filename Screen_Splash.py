@@ -17,15 +17,19 @@ class Screen_Splash(tk.Frame):
         widget.grid_propagate(False)
         
     def destroyMain(self):
+        '''Deletes main frame'''
         self.mainFrame.destroy()
         
     def hideSelf(self):
+        '''Removes widgets from grid'''
         self.mainFrame.grid_remove()
         
     def showSelf(self):
+        ''' organises widgets in a table-like structure'''
         self.mainFrame.grid()
         
     def createScreen(self):
+        '''create splash screen'''
         strBGColor = "#000000"
     
         self.mainFrame = tk.Frame(self.root, 
@@ -36,6 +40,7 @@ class Screen_Splash(tk.Frame):
             image=self.imgSplash)
         
     def gridify(self):
+        '''Expands image'''
         self.mainFrame.grid(column=0,row=0,sticky="NSEW")
         self.labelSplash.place(relx=0.5,rely=0.5,anchor=tk.CENTER) 
         
