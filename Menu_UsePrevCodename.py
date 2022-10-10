@@ -49,7 +49,7 @@ class Menu_UsePrevCodename(tk.Frame):
         
     def setCodename(self, strCodename):
         self.strPlayerCodename = strCodename
-        self.labelPlayerCodeName = "Player Code Name: " + self.strPlayerCodename
+        self.labelPlayerCodeName["text"] = "Player Code Name: " + self.strPlayerCodename
             
     def create(self):
         strBorderColor = "#5b5bc3"

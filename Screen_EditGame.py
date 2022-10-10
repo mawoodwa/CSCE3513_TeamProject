@@ -166,6 +166,7 @@ class Screen_EditGame(tk.Frame):
         else:
             print(playerRow[0])
             self.intMenu = self.ASKUSEPREVCODE
+            self.menuUsePrevCodename.setCodename(playerRow[0][3])
             self.menuUsePrevCodename.openMenu()
             self.menuUsePrevCodename.showSelf()
             self.listPlayerInfo[0] = playerRow[0][0]
