@@ -240,11 +240,11 @@ class Screen_EditGame(tk.Frame):
         self.root.update()
         #self.entryPlayerName.delete(0,tk.END)
         #self.entryPlayerName["state"]="disabled"
-        self.entryPlayerCodeName.delete(0,tk.END)
-        self.entryPlayerCodeName["state"]="disabled"
-        self.buttonSubmit["state"]="disabled"
-        self.frameTeamRed.tkraise()
-        self.frameTeamGreen.tkraise()
+        #self.entryPlayerCodeName.delete(0,tk.END)
+        #self.entryPlayerCodeName["state"]="disabled"
+        #self.buttonSubmit["state"]="disabled"
+        #self.frameTeamRed.tkraise()
+        #self.frameTeamGreen.tkraise()
         self.root.update() 
         
     def showMainMenu(self):
