@@ -238,8 +238,8 @@ class Screen_EditGame(tk.Frame):
         self.menuMoveToPlayConfirm.showSelf()
         self.menuMoveToPlayConfirm.openMenu()
         self.root.update()
-        self.entryPlayerName.delete(0,tk.END)
-        self.entryPlayerName["state"]="disabled"
+        #self.entryPlayerName.delete(0,tk.END)
+        #self.entryPlayerName["state"]="disabled"
         self.entryPlayerCodeName.delete(0,tk.END)
         self.entryPlayerCodeName["state"]="disabled"
         self.buttonSubmit["state"]="disabled"
