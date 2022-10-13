@@ -21,7 +21,7 @@ Be sure to check the Dependency Installation
 ## Dependency Installation
 * Tkinter should be installed with python3 by default
   * If not installed on linux by default, try the following command: sudo apt-get install python-tk
-* Download github devtest repository, either cloning by using Git or download ZIP file. Unpack somewhere on your computer and go into the directory in commandline: cd (full directory path)
+* Download github main branch repository, either cloning by using Git or download ZIP file. Unpack somewhere on your computer and go into the directory in commandline: cd (full directory path)
 * (Optional) Set up a virtual environment for python: python -m venv (name of directory here)
   * (Linux): If virtual environment addon for python is not installed by default and gives an error, try either "sudo apt install python3.8-venv" or "apt install python3.8-venv", without quotations
 * (Optional) Activate the virtual environment in CLI: 
