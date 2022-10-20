@@ -3,7 +3,7 @@
 ## What's New?
 Some of the changes to this iteration are:
 * Fixed previous codename found not showing in UI
-* Harded database url into code
+* Hardcoded database url into code
 * Fixed error during transition to Play Game screen
 
 **MAJOR BUGS ARE TO BE EXPECTED**
@@ -33,7 +33,7 @@ Be sure to check the Dependency Installation
  
 ## Database Token, Security, and Information
 * The database token (usually called database url or URI)  may expire after a certain time outside our control unfortuanately. This is mentioned by Heroku that it will change periodically automatically. If for whatever reason it expires, please email myself (ctj011@uark.edu) or one of the other team members to update the code so that the database works properly.
-* Previously, any user downloading this program would have to set an environment variable, DATABASE_URL, in order to communicate between the database and the program. The variable would be set to the database url/URI/database token, previously given in this readme. While this would help prevent having to update the code each time by having the user instead send a request for the database url/URI itself, this has been changed for the sake of the grader. As mentioned in the next point, it has been removed and harded after asking the professor for ease-of-access.
+* Previously, any user downloading this program would have to set an environment variable, DATABASE_URL, in order to communicate between the database and the program. The variable would be set to the database url/URI/database token, previously given in this readme. While this would help prevent having to update the code each time by having the user instead send a request for the database url/URI itself, this has been changed for the sake of the grader. As mentioned in the next point, it has been removed and hardcoded after asking the professor for ease-of-access.
 * Regarding security: The database token / database url would normally not be shared on a public website such as GitHub; however, by the request of the professor for ease-of-access sake, and since this is an academic learning environment, it is included in the Database.py file. It is intended that only the graders and students access the database.
 
 ## How to
