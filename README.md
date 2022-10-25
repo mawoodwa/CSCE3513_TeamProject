@@ -1,10 +1,17 @@
-# Main Branch (10/09/22)
+# Devtest Branch (10/25/22)
 
 ## What's New?
 Some of the changes to this iteration are:
-* Fixed previous codename found not showing in UI
-* Harded database url into code
-* Fixed error during transition to Play Game screen
+* Began refactoring code
+  * Isolated all .py files other than main into folder "lib"
+  * Seperated .py files based on when/where they're used, such as in screen folders or left in parent "lib" if they are shared or used primarily in main.py
+  * Seperated frames with heavy interactions into their own seperate classes and files
+  * Seperated most of the menus and menu logic from the edit game screen into their own seperate classes and files
+* Finishing requirements for Sprint 3
+  * Added error checking that ensures each team must have at least 1 player before continuing to Play Game screen
+  * Reorganized Play Game screen to accomodate 15 player-per-team team members and their scores
+  * Added timer that starts when switching to Play Game screen. Has both a regular "countdown" timer ("Game beginning in...") and "warning" timer ("Game imminent! Starting in..."). Shows "Begin!" for 1 second when timer has finished.
+  * Added ability to switch back to Edit Game screen from Play Game screen via F5. This works while timer is active, pausing the timer and showing the paused time at the top of the menu.
 
 **MAJOR BUGS ARE TO BE EXPECTED**
 
@@ -33,17 +40,19 @@ Be sure to check the Dependency Installation
  
 ## Database Token, Security, and Information
 * The database token (usually called database url or URI)  may expire after a certain time outside our control unfortuanately. This is mentioned by Heroku that it will change periodically automatically. If for whatever reason it expires, please email myself (ctj011@uark.edu) or one of the other team members to update the code so that the database works properly.
-* Previously, any user downloading this program would have to set an environment variable, DATABASE_URL, in order to communicate between the database and the program. The variable would be set to the database url/URI/database token, previously given in this readme. While this would help prevent having to update the code each time by having the user instead send a request for the database url/URI itself, this has been changed for the sake of the grader. As mentioned in the next point, it has been removed and harded after asking the professor for ease-of-access.
+* Previously, any user downloading this program would have to set an environment variable, DATABASE_URL, in order to communicate between the database and the program. The variable would be set to the database url/URI/database token, previously given in this readme. While this would help prevent having to update the code each time by having the user instead send a request for the database url/URI itself, this has been changed for the sake of the grader. As mentioned in the next point, it has been removed and hardcoded after asking the professor for ease-of-access.
 * Regarding security: The database token / database url would normally not be shared on a public website such as GitHub; however, by the request of the professor for ease-of-access sake, and since this is an academic learning environment, it is included in the Database.py file. It is intended that only the graders and students access the database.
 
 ## How to
 * Run program by typing in commandline (without quotations): "python main.py"
 * Wait for splash screen (3 seconds) to take you to Edit Game screen
-* Only the Edit Game screen has functionality as of now:
+* On the Edit Game screen:
   * Use Arrow keys to move up/down the player list
   * Insert a player using Ins key, Delete a player using Del key (as seen as bottom of window)
   * Press F7 to delete table database (this is for debugging, will likely not be in final version)
   * Press F5 to move to Play Screen. The Play Screen has no functionality and as such, this will be the last screen you see before closing the Tkinter window.
+* On the Play Game screen:
+  * Currently, only F5 key has functionality, allowing you to pause/unpause game countdown/warning timer and switch back to Edit Game screen.
 
 ## Testing Needed
 * More systems (test with multiple Windows/Linux computers)
