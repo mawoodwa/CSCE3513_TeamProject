@@ -1,46 +1,35 @@
 import tkinter as tk
 from tkinter import ttk
+from lib.Menu import *
 
-class Menu_AddCodename(tk.Frame):
-    def __init__(self, tkRoot, mSubmitCodename):
+class Menu_AddPlayerName(Menu):
+    def __init__(self, tkRoot, mSubmitPlayerName):
         super().__init__(tkRoot)
-        self.root = tkRoot
         
-        self.strDefaultFont = "Arial"
-        self["bg"]="#000000"
-        
-        self.methodSubmitCodename = mSubmitCodename
-        self.create()
+        self.methodSubmitPlayerName = mSubmitPlayerName
+        self.createSelf()
         self.gridify()
         
-    # Size control - prevent widget from over-expanding outside grid cell
-    # This should be applied to most widgets
-    def propagateWidget(self, widget):
-        widget.pack_propagate(False)
-        widget.grid_propagate(False)
+    def setPlayerName(self, strFirstName, strLastName):
+        self.entryPlayerFirstName.insert(0,strFirstName)
+        self.entryPlayerLastName.insert(0,strLastName)
         
-    def destroyMain(self):
-        self.destroy()
-        
-    def hideSelf(self):
-        self.grid_remove()
-        
-    def showSelf(self):
-        self.grid()
-
-    def openMenu(self):
+    def enableSelf(self):
         self.tkraise()
-        self.entryPlayerCodeName["state"]="normal"
-        self.entryPlayerCodeName.insert(0,"")
-        self.entryPlayerCodeName.focus_set()
+        self.entryPlayerFirstName["state"]="normal"
+        self.entryPlayerFirstName.focus_set()
+        self.entryPlayerLastName["state"]="normal"
         self.buttonSubmit["state"]="normal"
-        self.root.update()
+        self.buttonSubmit.bind("<Return>",self.addPlayerFromMenu)
         
-    def closeMenu(self):
-        self.entryPlayerCodeName.delete(0,tk.END)
-        self.entryPlayerCodeName["state"]="disabled"
+    def disableSelf(self):
+        self.entryPlayerFirstName.delete(0,tk.END)
+        self.entryPlayerFirstName["state"]="disabled"
+        self.entryPlayerLastName.delete(0,tk.END)
+        self.entryPlayerLastName["state"]="disabled"
         self.buttonSubmit["state"]="disabled"
-        self.root.update()
+        self.buttonSubmit.unbind("<Return>")
+        self.clearInsertMenuError()
         
     def showInsertMenuError(self,text):
         if len(self.labelInsPError["text"]) > 0:
@@ -52,20 +41,25 @@ class Menu_AddCodename(tk.Frame):
         self.labelInsPError["text"] = ""
         
     def addPlayerFromMenu(self,event=None):
-        intMinCNameLen = 2  # Code Name
-        intMaxCNameLen = 30 # Code Name
+        intMinPFNameLen = 2  # Player Name
+        intMaxPFNameLen = 30 # Player Name
+        intMinPLNameLen = 2  # Code Name
+        intMaxPLNameLen = 30 # Code Name
     
         self.clearInsertMenuError()
-        intLenCodeName = len(self.entryPlayerCodeName.get())
-        boolCodeNameInvalid = intLenCodeName < intMinCNameLen or intLenCodeName > intMaxCNameLen or " " in self.entryPlayerCodeName.get() or not self.entryPlayerCodeName.get().isalnum()
-        if boolCodeNameInvalid:
-            self.showInsertMenuError("Codename name must be \n between 2 - 30 alphanumeric characters \n and no spaces!")
-        if not boolCodeNameInvalid:
-            print("Can add player!")
+        intLenPlayerFirstName = len(self.entryPlayerFirstName.get())
+        intLenPlayerLastName = len(self.entryPlayerLastName.get())
+        boolFirstNameInvalid = intLenPlayerFirstName < intMinPFNameLen or intLenPlayerFirstName > intMaxPFNameLen or " " in self.entryPlayerFirstName.get() or not self.entryPlayerFirstName.get().isalnum()
+        boolLastNameInvalid = intLenPlayerLastName < intMinPLNameLen or intLenPlayerLastName > intMaxPLNameLen or " " in self.entryPlayerLastName.get() or not self.entryPlayerLastName.get().isalnum()
+        if boolFirstNameInvalid:
+            self.showInsertMenuError("First name must be between \n2 - 30 alphanumeric characters and no spaces!")
+        if boolLastNameInvalid:
+            self.showInsertMenuError("Last name must be between \n2 - 30 alphanumeric characters, and no spaces!")
+        if not boolFirstNameInvalid and not boolLastNameInvalid:
             self.clearInsertMenuError()
-            self.methodSubmitCodename(self.entryPlayerCodeName.get())
+            self.methodSubmitPlayerName(self.entryPlayerFirstName.get(), self.entryPlayerLastName.get())
             
-    def create(self):
+    def createSelf(self):
         strBorderColor = "#5b5bc3"
         strBGColor = "#000000"
         strTextcolorError = "#FF0000" # True Red
@@ -76,7 +70,6 @@ class Menu_AddCodename(tk.Frame):
         intTextsizeHint = 15
         intTextsizeMain = 16
     
-        #self.frameInsP = tk.Frame(self.root, bg=strBorderColor)
         self.propagateWidget(self)
         self.frameInsPInterior = tk.Frame(self, bg=strBGColor)
         self.labelInsPHead = tk.Label(self.frameInsPInterior,
@@ -85,10 +78,15 @@ class Menu_AddCodename(tk.Frame):
         self.labelInsPError = tk.Label(self.frameInsPInterior,
             text="",
             fg= strTextcolorError,bg=strBGColor,font=(strFont,intTextsizeError))
-        self.labelPlayerCodeName = tk.Label(self.frameInsPInterior,
-            text="Player Code Name:",
+        self.labelPlayerFirstName = tk.Label(self.frameInsPInterior,
+            text="Player First Name:",
             fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeMain))
-        self.entryPlayerCodeName = tk.Entry(self.frameInsPInterior,
+        self.entryPlayerFirstName = tk.Entry(self.frameInsPInterior,
+            state="disabled",font=(strFont,intTextsizeMain))
+        self.labelPlayerLastName = tk.Label(self.frameInsPInterior,
+            text="Player Last Name:",
+            fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeMain))
+        self.entryPlayerLastName = tk.Entry(self.frameInsPInterior,
             state="disabled",font=(strFont,intTextsizeMain))
         self.labelHint = tk.Label(self.frameInsPInterior,
             text="Tab or click to switch between boxes\nClick submit to insert player\nPress Esc to cancel",
@@ -114,7 +112,9 @@ class Menu_AddCodename(tk.Frame):
             self.frameInsPInterior.rowconfigure(i,weight=1,uniform="uniformIns")
         self.labelInsPHead.grid(column=0,row=0,columnspan=10,rowspan=2,sticky="NSEW")
         self.labelInsPError.grid(column=0,row=2,columnspan=10,rowspan=2,sticky="NEW")
-        self.labelPlayerCodeName.grid(column=0,row=6,columnspan=4,rowspan=2,sticky="SEW")
-        self.entryPlayerCodeName.grid(column=4,row=6,columnspan=6,rowspan=2,sticky="SEW")
+        self.labelPlayerFirstName.grid(column=0,row=4,columnspan=4,rowspan=2,sticky="SEW")
+        self.entryPlayerFirstName.grid(column=4,row=4,columnspan=6,rowspan=2,sticky="SEW")
+        self.labelPlayerLastName.grid(column=0,row=6,columnspan=4,rowspan=2,sticky="SEW")
+        self.entryPlayerLastName.grid(column=4,row=6,columnspan=6,rowspan=2,sticky="SEW")
         self.labelHint.grid(column=0,row=9,rowspan=3,columnspan=8,padx=10,sticky="NSW")
         self.buttonSubmit.grid(column=7,row=9,rowspan=2,columnspan=2,sticky="NSEW")

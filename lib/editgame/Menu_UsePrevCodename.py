@@ -1,45 +1,29 @@
 import tkinter as tk
 from tkinter import ttk
+from lib.Menu import *
 
-class Menu_UsePrevCodename(tk.Frame):
+class Menu_UsePrevCodename(Menu):
     def __init__(self, tkRoot, mSubmitYes, mSubmitNo):
         super().__init__(tkRoot)
-        self.root = tkRoot
-        
-        self.strDefaultFont = "Arial"
-        self["bg"]="#000000"
         
         self.methodSubmitYes = mSubmitYes
         self.methodSubmitNo = mSubmitNo
         self.strPlayerCodename = ""
-        self.create()
+        self.createSelf()
         self.gridify()
-        
-    # Size control - prevent widget from over-expanding outside grid cell
-    # This should be applied to most widgets
-    def propagateWidget(self, widget):
-        widget.pack_propagate(False)
-        widget.grid_propagate(False)
-        
-    def destroyMain(self):
-        self.destroy()
-        
-    def hideSelf(self):
-        self.grid_remove()
-        
-    def showSelf(self):
-        self.grid()
 
-    def openMenu(self):
+    def enableSelf(self):
         self.tkraise()
         self.buttonSubmitYes["state"]="normal"
         self.buttonSubmitNo["state"]="normal"
-        self.root.update()
+        self.buttonSubmitYes.bind("<Return>",self.submitYes)
+        self.buttonSubmitNo.bind("<Return>",self.submitNo)
         
-    def closeMenu(self):
+    def disableSelf(self):
         self.buttonSubmitYes["state"]="disabled"
         self.buttonSubmitNo["state"]="disabled"
-        self.root.update()
+        self.buttonSubmitYes.unbind("<Return>")
+        self.buttonSubmitNo.unbind("<Return>")
         
     def submitNo(self,event=None):
         self.methodSubmitNo()
@@ -51,7 +35,7 @@ class Menu_UsePrevCodename(tk.Frame):
         self.strPlayerCodename = strCodename
         self.labelPlayerCodeName["text"] = "Player Code Name: " + self.strPlayerCodename
             
-    def create(self):
+    def createSelf(self):
         strBorderColor = "#5b5bc3"
         strBGColor = "#000000"
         strTextcolorError = "#FF0000" # True Red
@@ -61,7 +45,6 @@ class Menu_UsePrevCodename(tk.Frame):
         intTextsizeError = 14
         intTextsizeMain = 16
     
-        #self.frameInsP = tk.Frame(self.root, bg=strBorderColor)
         self.propagateWidget(self)
         self.frameInterior = tk.Frame(self, bg=strBGColor)
         self.labelHead = tk.Label(self.frameInterior,

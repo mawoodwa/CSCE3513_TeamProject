@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+from lib.AppObject import *
 
-class Screen_Splash(tk.Frame):
+class Screen_Splash(AppObject):
     def __init__(self, tkRoot):
         super().__init__(tkRoot)
         self.root = tkRoot
@@ -9,30 +10,11 @@ class Screen_Splash(tk.Frame):
         self.createScreen()
         self.gridify()
         
-        
-    # Size control - prevent widget from over-expanding outside grid cell
-    # This should be applied to most widgets
-    def propagateWidget(self, widget):
-        widget.pack_propagate(False)
-        widget.grid_propagate(False)
-        
-    def destroyMain(self):
-        '''Deletes main frame'''
-        self.mainFrame.destroy()
-        
-    def hideSelf(self):
-        '''Removes widgets from grid'''
-        self.mainFrame.grid_remove()
-        
-    def showSelf(self):
-        ''' organises widgets in a table-like structure'''
-        self.mainFrame.grid()
-        
     def createScreen(self):
         '''create splash screen'''
         strBGColor = "#000000"
     
-        self.mainFrame = tk.Frame(self.root, 
+        self.mainFrame = tk.Frame(self, 
             bg=strBGColor) 
         self.propagateWidget(self.mainFrame)
         self.imgSplash = tk.PhotoImage(file="./logo.png")
@@ -41,6 +23,8 @@ class Screen_Splash(tk.Frame):
         
     def gridify(self):
         '''Expands image'''
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(0,weight=1)
         self.mainFrame.grid(column=0,row=0,sticky="NSEW")
         self.labelSplash.place(relx=0.5,rely=0.5,anchor=tk.CENTER) 
         
