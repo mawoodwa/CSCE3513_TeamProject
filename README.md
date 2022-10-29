@@ -1,7 +1,8 @@
-# Devtest Branch (10/25/22)
+# Main Branch (10/29/22)
 
 ## What's New?
 Some of the changes to this iteration are:
+
 * Began refactoring code
   * Isolated all .py files other than main into folder "lib"
   * Seperated .py files based on when/where they're used, such as in screen folders or left in parent "lib" if they are shared or used primarily in main.py
@@ -16,7 +17,6 @@ Some of the changes to this iteration are:
 **MAJOR BUGS ARE TO BE EXPECTED**
 
 Be sure to check the Dependency Installation
-
 
 ## Basics
 * Intended only for use in Team 8 of UArk CSCE 3513, Fall 2022
