@@ -54,27 +54,12 @@ class App(tk.Frame):
             self.root.wm_attributes('-zoomed',1)
         self.propagateWidget(self.root)
         
-        # Using grid instead of pack to allow frame-on-frame for
-        #    inserting player menu, and other similar menus
-        self.root.columnconfigure(0,weight=1)
-        self.root.rowconfigure(0,weight=1)
-        self["bg"] = "#000000"
-        self.columnconfigure(0,weight=1)
-        self.rowconfigure(0,weight=1)
-        self.grid(column=0, row=0,sticky="NSEW")
+        self.gridConfigure(self)
         
         # Needed for bug with F10 key.
         self.inputSim = keyboard.Controller()
         
-        # App members
-        self.screen_Splash = Screen_Splash(self)
-        self.screen_Splash.grid(column=0, row=0,sticky="NSEW")
-        self.screen_EditGame = Screen_EditGame(self)
-        self.screen_EditGame.bind_ChangeToPlay(self.changeToPlay)
-        self.screen_EditGame.grid(column=0, row=0,sticky="NSEW")
-        self.screen_PlayGame = Screen_PlayGame(self)
-        self.screen_PlayGame.bind_MoveToEdit(self.changeToEdit)
-        self.screen_PlayGame.grid(column=0, row=0,sticky="NSEW")
+        self.appMembers(self)
         
         self.currentScreen = self.S_SPLASH
         self.screen = self.screen_Splash
@@ -84,6 +69,29 @@ class App(tk.Frame):
         print("Waiting 3 seconds...")
         self.idRootAfter = self.root.after(3000, self.showSplashFor3Sec)
     
+    def appMembers(self):
+        # App members
+        # I moved this into it's own function just for the sake of separating things and clarity. -Mason Woodward
+        self.screen_Splash = Screen_Splash(self)
+        self.screen_Splash.grid(column=0, row=0,sticky="NSEW")
+        self.screen_EditGame = Screen_EditGame(self)
+        self.screen_EditGame.bind_ChangeToPlay(self.changeToPlay)
+        self.screen_EditGame.grid(column=0, row=0,sticky="NSEW")
+        self.screen_PlayGame = Screen_PlayGame(self)
+        self.screen_PlayGame.bind_MoveToEdit(self.changeToEdit)
+        self.screen_PlayGame.grid(column=0, row=0,sticky="NSEW")
+        
+    def gridConfigure(self):
+        # Using grid instead of pack to allow frame-on-frame for
+        #    inserting player menu, and other similar menus
+        # Put this into it's own function for the sake of separation and clarity
+        self.root.columnconfigure(0,weight=1)
+        self.root.rowconfigure(0,weight=1)
+        self["bg"] = "#000000"
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(0,weight=1)
+        self.grid(column=0, row=0,sticky="NSEW")
+        
     # Size control - prevent widget from over-expanding outside grid cell
     # This should be applied to most widgets
     def propagateWidget(self, widget):
@@ -116,7 +124,8 @@ class App(tk.Frame):
         else:
             print("Changing from unknown screen")
             
-    def loadScreen(self, nextScreen):
+    def changeScreen(self, nextScreen):
+        #change the title of this function... hopefully makes this more clear? Change back if y'all are not fans. - Mason Woodward
         if nextScreen == self.S_SPLASH:
             print("Loading Splash...")
             self.currentScreen = self.S_SPLASH
