@@ -77,4 +77,4 @@ class InputListener:
             if self.screen_PlayGame.getMenuState() == Screen_PlayGame.MENU_MAIN or self.screen_PlayGame.getMenuState() == Screen_PlayGame.MENU_WAITSTART:
                 self.screen_PlayGame.openMoveToEditMenu()
         if key == keyboard.Key.esc:
-            self.screen_PlayGame.closeAllMenus()
+            self.screen_PlayGame.closeMoveToEditMenu()

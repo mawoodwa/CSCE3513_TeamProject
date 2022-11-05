@@ -105,7 +105,10 @@ class Screen_PlayGame(AppObject):
         if self.frameWaitUntilPlay.isCountActive() and not self.frameWaitUntilPlay.isPaused():
             self.frameWaitUntilPlay.pauseCount()
             intTimeRemaining = self.frameWaitUntilPlay.getTimeRemaining()
-            self.menuMoveToEditConfirm.setTimerPausedHead(intTimeRemaining)
+            if intTimeRemaining < 0.0:
+                self.menuMoveToEditConfirm.setTimerPausedHead("0:00 (BEGIN)")
+            else:
+                self.menuMoveToEditConfirm.setTimerPausedHead(intTimeRemaining)
         self.root.update()
         
     def setPlayersUsingList(self, listPlayers):

@@ -71,7 +71,7 @@ class Frame_WaitUntilPlay(Menu):
     def getTimeRemaining(self):
         return self.intTimeRemaining
         
-    def beginCount(self, counttime=15.0):
+    def beginCount(self, counttime=30.0):
         print("Beginning count with counttime: {}".format(counttime))
         self.timeUntil = time.time() + counttime
         self.resetToDefault()
