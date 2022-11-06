@@ -107,10 +107,10 @@ class Frame_TeamBoxes(AppObject):
         
     def setArrowPos(self, intTeam, intEntry):
         if intTeam != self.REDARROWPOS and intTeam != self.GREENARROWPOS:
-            raise Exception("Frame_TeamBoxes: Invalid intTeam passed to setArrowPos!")
+            print("Frame_TeamBoxes: Invalid intTeam passed to setArrowPos!")
         else:
             if intEntry < 0 or intEntry >= self.intPlayerEntries:
-                raise Exception("Frame_TeamBoxes: Invalid intEntry passed to setArrowPos!")
+                print("Frame_TeamBoxes: Invalid intEntry passed to setArrowPos!")
             else:
                 self.removeArrowAtPos()
                 self.listArrowPos[self.INDEX_TEAM] = intTeam
@@ -124,9 +124,9 @@ class Frame_TeamBoxes(AppObject):
             if newPosY >= 0 and newPosY < self.intPlayerEntries:
                 self.setArrowPos(newPosX, newPosY)
             else:
-                raise Exception("Frame_TeamBoxes: Invalid intOffsetY passed to moveArrow!")
+                print("Frame_TeamBoxes: Invalid intOffsetY passed to moveArrow!")
         else:
-            raise Exception("Frame_TeamBoxes: Invalid intOffsetX passed to moveArrow!")
+            print("Frame_TeamBoxes: Invalid intOffsetX passed to moveArrow!")
             
     def getPlayerAtArrow(self):
         if self.listArrowPos[self.INDEX_TEAM] == self.REDARROWPOS:

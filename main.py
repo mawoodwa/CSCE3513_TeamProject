@@ -117,6 +117,7 @@ class App(tk.Frame):
     # Used to bind in Screen_PlayGame
     def changeToEdit(self):
         self.screen_PlayGame.closeAllMenus()
+        self.screen_PlayGame.resetGameTimer()
         self.changeScreens(AppState.S_EDITGAME)
             
     def unloadCurrentScreen(self):

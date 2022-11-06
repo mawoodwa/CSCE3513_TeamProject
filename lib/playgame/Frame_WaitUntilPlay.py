@@ -108,11 +108,19 @@ class Frame_WaitUntilPlay(Menu):
                 self.labelTimer["text"] = "BEGIN!"
                 print("BEGIN!")
                 self.root.update()
-                self.idRootAfter = self.root.after(1000, self.endCount)
+                self.idRootAfter = self.root.after(1000, self.endCountInternal)
+                
+    def endCountInternal(self):
+        self.endCount(True)
         
-    def endCount(self):
+    def endCount(self, boolCalledInternally=False):
         self.root.after_cancel(self.idRootAfter)
         self.resetToDefault()
         self.hideSelf()
         self.boolIsCountActive = False
         self.boolIsPaused = False
+        if boolCalledInternally:
+            self.methodAfterFinished()
+        
+    def bindMethodAfterFinished(self, methodAfterFinished):
+        self.methodAfterFinished = methodAfterFinished
