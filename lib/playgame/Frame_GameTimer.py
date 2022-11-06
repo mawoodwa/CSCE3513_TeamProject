@@ -44,7 +44,7 @@ class Frame_GameTimer(AppObject):
     def updateTimer(self):
         if self.boolIsTimerActive:
             floatTimeRemaining = self.floatTimeUntil - time.time()
-            if floatTimeRemaining <= 0.0:
+            if floatTimeRemaining <= 1.0: # Does not reach below 0.0 - not sure why. Should still function correctly though
                 self.stopTimer()
             elif int(floatTimeRemaining) != int(self.floatLastUpdatedTime):
                 strTimeRemaining = self.getFormattedTimeStr(floatTimeRemaining)
@@ -89,7 +89,7 @@ class Frame_GameTimer(AppObject):
     def hasTimerFinished(self):
         return self.hasTimerFinished
         
-    def startTimer(self, starttime=360.0): # 360 seconds = 6 minutes
+    def startTimer(self, starttime=361.0): # 361 seconds = 6 minutes + 1 additional sec to show 6:00 clearly
         if not self.boolIsTimerActive:
             self.floatTimeUntil = time.time() + starttime
             self.boolIsTimerActive = True

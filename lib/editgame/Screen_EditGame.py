@@ -144,6 +144,10 @@ class Screen_EditGame(AppObject):
         self.menuManager.showSelf()
         self.menuManager.openMoveToPlayConfirm()
         
+    def openDebugFillPlayers(self):
+        self.menuManager.showSelf()
+        self.menuManager.openDebugFillPlayers()
+        
     def switchToMainMenu(self):
         self.menuManager.switchToMainMenu()
         
@@ -158,31 +162,3 @@ class Screen_EditGame(AppObject):
     def clearAllPlayers(self):
         self.frameTeamBoxes.deleteAllPlayers()
         self.root.update()
-        
-    def debug_FillAllPlayers(self):
-        listRedPlayerNames = ["Janice Evans", "Raymond Griffin", "Patrick Hill", "Matthew Bryant",
-                            "Jason Martin", "Catherine Carter", "Kevin Sanders", "Gary Young",
-                            "Anthony Russel", "Pamela Hart", "Leonardo Harris", "Nick Wells",
-                            "Simon Mitchell", "Paul Willis", "Paula Reyes"]
-        listGreenPlayerNames = ["Steven Perez", "Gary Patterson", "Janice Hall", "Kenneth Edwards",
-                                "Walter Howard", "Norman Hughes", "Lewis Hayes", "Angela Shaw",
-                                "Burt Davis", "Kevin Simpson", "Carlene Brown", "Frederick Baker",
-                                "Derick Smith", "Stephen Morris", "Max Reed"]
-        listRedCodenames = ["ProudPancake","ExcitingEgg","SmoggyGhost","HollowHorse",
-                            "BarbaricMouse","GracefulTiger","BusyBear","BrawnyBee",
-                            "DullBell","CharmingJellyfish", "GentleCow", "CleverPotato",
-                            "SpitefulArmadillo","DapperVelociraptor","MeekMouse"]
-        listGreenCodenames = ["PhantomFairy","GrumpyCat","ChiefRat","RaggedRabbit",
-                            "SpikyWorm","DecisiveDuck","LoudCloud","GraySnail",
-                            "SaltyPig","JollySponge","SpicySugar","DraconianDeer",
-                            "SoftTomato","IcyIgloo","MoldyApple"]
-        for j in range(0, 2):
-            for i in range(0, 15):
-                if j == 0:
-                    self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.REDARROWPOS, i)
-                    self.frameTeamBoxes.addPlayer(listRedPlayerNames[i],
-                                                    listRedCodenames[i])
-                else:
-                    self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.GREENARROWPOS, i)
-                    self.frameTeamBoxes.addPlayer(listGreenPlayerNames[i],
-                                                    listGreenCodenames[i])

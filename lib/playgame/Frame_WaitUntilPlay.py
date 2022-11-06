@@ -93,7 +93,7 @@ class Frame_WaitUntilPlay(Menu):
         intTimeRemaining = self.timeUntil - time.time()
         if intTimeRemaining < 10.0 and self.labelTimer["bg"] != "#ff6666":
             self.labelHead["fg"] = "#ff6666"
-            self.labelHead["text"] = "Game imminent! Starting in..."
+            self.labelHead["text"] = "Game imminent! \nStarting in..."
             self.labelTimer["fg"] = "#ff6666"
         if not self.boolIsPaused:
             if intTimeRemaining > 0.0:

@@ -63,7 +63,7 @@ class InputListener:
             self.screen_EditGame.deletePlayer()
             
         if key == keyboard.Key.f4:
-            self.screen_EditGame.debug_FillAllPlayers()
+            self.screen_EditGame.openDebugFillPlayers()
         if key == keyboard.Key.f5:
             self.screen_EditGame.openMoveToPlayConfirm()
             

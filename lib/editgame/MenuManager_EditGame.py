@@ -10,6 +10,7 @@ from lib.editgame.Menu_UsePrevCodename import *
 from lib.editgame.Menu_DeleteDBConfirm import *
 from lib.editgame.Menu_MoveToPlayConfirm import *
 from lib.editgame.Menu_ErrorNeedPlayers import *
+from lib.editgame.Menu_DebugFillPlayers import *
 from lib.editgame.Frame_TeamBoxes import *
 
 class MenuManager_EditGame(AppObject):
@@ -24,6 +25,7 @@ class MenuManager_EditGame(AppObject):
     DELETEDBCONFIRM = 4
     MOVETOPLAYCONFIRM = 5
     ERRORNEEDPLAYERS = 6
+    DEBUGFILLPLAYERS = 7
     def __init__(self, tkRoot):
         super().__init__(tkRoot)
         
@@ -43,6 +45,7 @@ class MenuManager_EditGame(AppObject):
         self.createDeleteDBConfirmMenu()
         self.createMoveToPlayConfirmMenu()
         self.createErrorNeedPlayersMenu()
+        self.createDebugFillPlayersMenu()
          
     def createAddPlayerMenu(self):
         self.menuAddPlayerName = Menu_AddPlayerName(self, self.submitPlayerName)
@@ -66,6 +69,10 @@ class MenuManager_EditGame(AppObject):
     def createErrorNeedPlayersMenu(self):
         self.menuErrorNeedPlayers = Menu_ErrorNeedPlayers(self, self.submitOk_NeedPlayers)
         
+    def createDebugFillPlayersMenu(self):
+        self.menuDebugFillPlayers = Menu_DebugFillPlayers(self, self.submitYes_FillPlayers,
+                                                                self.submitNo_FillPlayers)
+        
     def gridify(self):
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
@@ -81,6 +88,8 @@ class MenuManager_EditGame(AppObject):
         self.menuMoveToPlayConfirm.gridify()
         self.menuErrorNeedPlayers.grid(column=0,row=0,sticky="NSEW")
         self.menuErrorNeedPlayers.gridify()
+        self.menuDebugFillPlayers.grid(column=0,row=0,sticky="NSEW")
+        self.menuDebugFillPlayers.gridify()
         
     def openDeleteDBConfirmMenu(self):
         self.intMenu = self.DELETEDBCONFIRM
@@ -109,6 +118,11 @@ class MenuManager_EditGame(AppObject):
     def openErrorNeedPlayers(self):
         self.intMenu = self.ERRORNEEDPLAYERS
         self.menuErrorNeedPlayers.openSelf()
+        self.root.update()
+        
+    def openDebugFillPlayers(self):
+        self.intMenu = self.DEBUGFILLPLAYERS
+        self.menuDebugFillPlayers.openSelf()
         self.root.update()
         
     def switchToMainMenu(self):
@@ -140,6 +154,10 @@ class MenuManager_EditGame(AppObject):
     def closeInsPlayerWithoutSave(self):
         self.menuAddPlayerName.closeSelf()
         self.menuAddCodename.closeSelf()
+        self.switchToMainMenu()
+        
+    def closeDebugFillPlayers(self):
+        self.menuDebugFillPlayers.closeSelf()
         self.switchToMainMenu()
         
     def getMenuState(self):
@@ -191,6 +209,13 @@ class MenuManager_EditGame(AppObject):
     def submitOk_NeedPlayers(self):
         self.menuErrorNeedPlayers.closeSelf()
         self.switchToMainMenu()
+        
+    def submitYes_FillPlayers(self):
+        self.closeDebugFillPlayers()
+        self.debug_FillAllPlayers()
+        
+    def submitNo_FillPlayers(self):
+        self.closeDebugFillPlayers()
         
     def submitPlayerName(self, strFirstName, strLastName):
         self.menuAddPlayerName.closeSelf()
@@ -253,3 +278,52 @@ class MenuManager_EditGame(AppObject):
     def clearAllPlayers(self):
         self.frameTeamBoxes.deleteAllPlayers()
         self.root.update()
+             
+    def debug_AddOrUpdatePlayer(self, strPlayerFirstName, strPlayerLastName, strPlayerCodename):
+        tupleDBEntry = self.database.findPlayerByName(strPlayerFirstName, strPlayerLastName)
+        if tupleDBEntry is None or len(tupleDBEntry) == 0:
+            tupleLastEntry = self.database.getLastId()
+            intNextID = 0
+            if len(tupleLastEntry) > 0:
+                intNextID = int(tupleLastEntry[0][0])+1
+            listNewPlayerEntry = [intNextID, str(strPlayerFirstName), str(strPlayerLastName), str(strPlayerCodename)]
+            self.database.insertPlayer(listNewPlayerEntry)
+        else:
+            listUpdatedEntry = [tupleDBEntry[0][0], tupleDBEntry[0][1], tupleDBEntry[0][2], tupleDBEntry[0][3]]
+            listUpdatedEntry[3] = strPlayerCodename
+            self.database.updateUsingId(listUpdatedEntry)
+        self.database.commit()
+        
+    def debug_FillAllPlayers(self):
+        listRedPlayerNames = ["Janice Evans", "Raymond Griffin", "Patrick Hill", "Matthew Bryant",
+                            "Jason Martin", "Catherine Carter", "Kevin Sanders", "Gary Young",
+                            "Anthony Russel", "Pamela Hart", "Leonardo Harris", "Nick Wells",
+                            "Simon Mitchell", "Paul Willis", "Paula Reyes"]
+        listGreenPlayerNames = ["Steven Perez", "Gary Patterson", "Janice Hall", "Kenneth Edwards",
+                                "Walter Howard", "Norman Hughes", "Lewis Hayes", "Angela Shaw",
+                                "Burt Davis", "Kevin Simpson", "Carlene Brown", "Frederick Baker",
+                                "Derick Smith", "Stephen Morris", "Max Reed"]
+        listRedCodenames = ["ProudPancake","ExcitingEgg","SmoggyGhost","HollowHorse",
+                            "BarbaricMouse","GracefulTiger","BusyBear","BrawnyBee",
+                            "DullBell","CharmingJellyfish", "GentleCow", "CleverPotato",
+                            "SpitefulArmadillo","DapperVelociraptor","MeekMouse"]
+        listGreenCodenames = ["PhantomFairy","GrumpyCat","ChiefRat","RaggedRabbit",
+                            "SpikyWorm","DecisiveDuck","LoudCloud","GraySnail",
+                            "SaltyPig","JollySponge","SpicySugar","DraconianDeer",
+                            "SoftTomato","IcyIgloo","MoldyApple"]
+        for j in range(0, 2):
+            for i in range(0, 15):
+                if j == 0:
+                    self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.REDARROWPOS, i)
+                    self.frameTeamBoxes.addPlayer(listRedPlayerNames[i],
+                                                    listRedCodenames[i])
+                    listPlayerNameSplit = listRedPlayerNames[i].split(" ")
+                    self.debug_AddOrUpdatePlayer(listPlayerNameSplit[0], listPlayerNameSplit[1],                        listRedCodenames[i])
+                else:
+                    self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.GREENARROWPOS, i)
+                    self.frameTeamBoxes.addPlayer(listGreenPlayerNames[i],
+                                                    listGreenCodenames[i])
+                    listPlayerNameSplit = listGreenPlayerNames[i].split(" ")
+                    self.debug_AddOrUpdatePlayer(listPlayerNameSplit[0], listPlayerNameSplit[1],                        listRedCodenames[i])
+                self.root.update()
+        self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.REDARROWPOS, 0)
