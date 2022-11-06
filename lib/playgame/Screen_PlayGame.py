@@ -44,6 +44,7 @@ class Screen_PlayGame(AppObject):
         
     def createWaitUntilPlay(self):
         self.frameWaitUntilPlay = Frame_WaitUntilPlay(self)
+        self.frameWaitUntilPlay.bindMethodAfterFinished(self.startGameTimer)
         self.propagateWidget(self.frameWaitUntilPlay)
         
     def createFKeys(self):
@@ -95,6 +96,10 @@ class Screen_PlayGame(AppObject):
             self.intMenu = self.MENU_WAITSTART
             self.frameWaitUntilPlay.unpauseCount()
             self.frameWaitUntilPlay.showSelf()
+        elif self.frameGameboard.frameGameTimer.isTimerPaused():
+            self.intMenu = self.MENU_MAIN
+            self.frameGameboard.frameGameTimer.unpauseTimer()
+            self.showSelf()
         else:
             self.intMenu = self.MENU_MAIN
         self.showSelf()
@@ -105,7 +110,14 @@ class Screen_PlayGame(AppObject):
         if self.frameWaitUntilPlay.isCountActive() and not self.frameWaitUntilPlay.isPaused():
             self.frameWaitUntilPlay.pauseCount()
             intTimeRemaining = self.frameWaitUntilPlay.getTimeRemaining()
-            self.menuMoveToEditConfirm.setTimerPausedHead(intTimeRemaining)
+            if intTimeRemaining < 0.0:
+                self.menuMoveToEditConfirm.setTimerPausedHead("0:00 (BEGIN)")
+            else:
+                self.menuMoveToEditConfirm.setTimerPausedHead(intTimeRemaining)
+        if self.frameGameboard.frameGameTimer.isTimerActive() and not self.frameGameboard.frameGameTimer.isTimerPaused():
+            self.frameGameboard.frameGameTimer.pauseTimer()
+            strFormattedTimeRemaining = self.frameGameboard.frameGameTimer.getFormattedTimeRemaining()
+            self.menuMoveToEditConfirm.setTimerPausedHead(strFormattedTimeRemaining)
         self.root.update()
         
     def setPlayersUsingList(self, listPlayers):
@@ -121,6 +133,13 @@ class Screen_PlayGame(AppObject):
         self.frameWaitUntilPlay.endCount()
         self.frameWaitUntilPlay.hideSelf()
         
+    def startGameTimer(self):
+        self.frameGameboard.frameGameTimer.startTimer()
+        
+    def resetGameTimer(self):
+        self.frameGameboard.frameGameTimer.stopTimer()
+        self.frameGameboard.frameGameTimer.updateTimerStrLabel("6:00")
+        
     def bind_MoveToEdit(self, method):
         self.methodMoveToEdit = method
         self.menuMoveToEditConfirm.bindYes(self.methodMoveToEdit)
@@ -129,3 +148,4 @@ class Screen_PlayGame(AppObject):
         self.openMoveToEditMenu()
     def bindNo_MoveToEdit(self):
         self.closeMoveToEditMenu()
+        
