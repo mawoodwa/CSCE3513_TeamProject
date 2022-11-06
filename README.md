@@ -10,6 +10,7 @@ Some of the changes to this iteration are:
   * Seperated most of the menus and menu logic from the edit game screen into their own seperate classes and files
 * Finishing requirements for Sprint 3
   * Added error checking that ensures each team must have at least 1 player before continuing to Play Game screen
+  * Added debug function "Fill Players" currently bound to F4 in "Edit Game" screen. This will fill all 30 player slots with preset names/codenames. This may be removed in the final version of the program.
   * Reorganized Play Game screen to accomodate 15 player-per-team team members and their scores
   * Added a 30 second Warning timer that starts when switching to Play Game screen. Has a regular portion ("Game beginning in...") and a "Game Imminent" portion starting at 10 seconds remaining ("Game imminent! Starting in..."). Shows "Begin!" for 1 second when timer has finished.
   * Added functionality to the Play Game/"Countdown" timer. Begins at 6 minutes (6:00) after Warning timer has completely finished.
