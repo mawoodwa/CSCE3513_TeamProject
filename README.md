@@ -11,8 +11,9 @@ Some of the changes to this iteration are:
 * Finishing requirements for Sprint 3
   * Added error checking that ensures each team must have at least 1 player before continuing to Play Game screen
   * Reorganized Play Game screen to accomodate 15 player-per-team team members and their scores
-  * Added timer that starts when switching to Play Game screen. Has both a regular "countdown" timer ("Game beginning in...") and "warning" timer ("Game imminent! Starting in..."). Shows "Begin!" for 1 second when timer has finished.
-  * Added ability to switch back to Edit Game screen from Play Game screen via F5. This works while timer is active, pausing the timer and showing the paused time at the top of the menu.
+  * Added a 30 second Warning timer that starts when switching to Play Game screen. Has a regular portion ("Game beginning in...") and a "Game Imminent" portion starting at 10 seconds remaining ("Game imminent! Starting in..."). Shows "Begin!" for 1 second when timer has finished.
+  * Added functionality to the Play Game/"Countdown" timer. Begins at 6 minutes (6:00) after Warning timer has completely finished.
+  * Added ability to switch back to Edit Game screen from Play Game screen via F5. This works while either timer is active, pausing the timer and showing the paused time at the top of the menu.
 
 **MAJOR BUGS ARE TO BE EXPECTED**
 
