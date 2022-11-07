@@ -283,7 +283,7 @@ class MenuManager_EditGame(AppObject):
         tupleDBEntry = self.database.findPlayerByName(strPlayerFirstName, strPlayerLastName)
         if tupleDBEntry is None or len(tupleDBEntry) == 0:
             tupleLastEntry = self.database.getLastId()
-            intNextID = 0
+            intNextID = 1
             if len(tupleLastEntry) > 0:
                 intNextID = int(tupleLastEntry[0][0])+1
             listNewPlayerEntry = [intNextID, str(strPlayerFirstName), str(strPlayerLastName), str(strPlayerCodename)]
@@ -324,6 +324,6 @@ class MenuManager_EditGame(AppObject):
                     self.frameTeamBoxes.addPlayer(listGreenPlayerNames[i],
                                                     listGreenCodenames[i])
                     listPlayerNameSplit = listGreenPlayerNames[i].split(" ")
-                    self.debug_AddOrUpdatePlayer(listPlayerNameSplit[0], listPlayerNameSplit[1],                        listRedCodenames[i])
+                    self.debug_AddOrUpdatePlayer(listPlayerNameSplit[0], listPlayerNameSplit[1],                        listGreenCodenames[i])
                 self.root.update()
         self.frameTeamBoxes.setArrowPos(Frame_TeamBoxes.REDARROWPOS, 0)

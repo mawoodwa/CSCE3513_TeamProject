@@ -8,7 +8,7 @@ Some of the changes to this iteration are:
   * Seperated .py files based on when/where they're used, such as in screen folders or left in parent "lib" if they are shared or used primarily in main.py
   * Seperated frames with heavy interactions into their own seperate classes and files
   * Seperated most of the menus and menu logic from the edit game screen into their own seperate classes and files
-* Finishing requirements for Sprint 3
+* Finished requirements for Sprint 3
   * Added error checking that ensures each team must have at least 1 player before continuing to Play Game screen
   * Added debug function "Fill Players" currently bound to F4 in "Edit Game" screen. This will fill all 30 player slots with preset names/codenames. This may be removed in the final version of the program.
   * Reorganized Play Game screen to accomodate 15 player-per-team team members and their scores
