@@ -32,6 +32,7 @@ class InputListener:
 		#Simplified this function
         
     def on_press(self, key):
+        # self.any_InputListen(key) - See function for comment-out reason
         if self.appState.getState() == AppState.S_EDITGAME:
             if self.screen_EditGame.getMenuState() == self.screen_EditGame.PLAYERSELECT:
                 self.editgame_PlayerSelect(key)
@@ -41,11 +42,11 @@ class InputListener:
             self.playgame_Listen(key)
         elif self.appState.getState() == AppState.S_SPLASH:
             pass
-        self.any_InputListen(key)
         
     def any_InputListen(self, key):
-        if key == keyboard.Key.f10:
-            self.inputSim.press(keyboard.Key.f10)
+        pass
+        # if key == keyboard.Key.f10: # Currently causing weird graphics glitch.
+        #    self.inputSim.press(keyboard.Key.f10)
         
     def editgame_PlayerSelect(self, key):
         if key == keyboard.Key.up:
