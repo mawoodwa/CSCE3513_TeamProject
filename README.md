@@ -11,7 +11,7 @@ Some of the changes to this iteration are:
   * Added TrafficGenerator.py to dynamically create events and broadcast to localhost port 7501 (press f4 on Play Game screen to start traffic generator).
 * **LIMITATIONS AND OTHER INFORMATION**
   * If using professor's provided traffic generator, an invalid ID will cause the program to crash. The Network receiver does not currently handle invalid received data
-  * Wait Timer reduced to 10 seconds for debugging
+  * Wait Timer reduced to 5 seconds for debugging
 
 **MAJOR BUGS ARE TO BE EXPECTED**
 
