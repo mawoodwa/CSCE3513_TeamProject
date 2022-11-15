@@ -1,20 +1,17 @@
-# Devtest Branch (11/06/22)
+# Devtest Branch (11/15/22)
 
 ## What's New?
 Some of the changes to this iteration are:
 
-* Began refactoring code
-  * Isolated all .py files other than main into folder "lib"
-  * Seperated .py files based on when/where they're used, such as in screen folders or left in parent "lib" if they are shared or used primarily in main.py
-  * Seperated frames with heavy interactions into their own seperate classes and files
-  * Seperated most of the menus and menu logic from the edit game screen into their own seperate classes and files
-* Finished requirements for Sprint 3
-  * Added error checking that ensures each team must have at least 1 player before continuing to Play Game screen
-  * Added debug function "Fill Players" currently bound to F4 in "Edit Game" screen. This will fill all 30 player slots with preset names/codenames. This may be removed in the final version of the program.
-  * Reorganized Play Game screen to accomodate 15 player-per-team team members and their scores
-  * Added a 30 second Warning timer that starts when switching to Play Game screen. Has a regular portion ("Game beginning in...") and a "Game Imminent" portion starting at 10 seconds remaining ("Game imminent! Starting in..."). Shows "Begin!" for 1 second when timer has finished.
-  * Added functionality to the Play Game/"Countdown" timer. Begins at 6 minutes (6:00) after Warning timer has completely finished.
-  * Added ability to switch back to Edit Game screen from Play Game screen via F5. This works while either timer is active, pausing the timer and showing the paused time at the top of the menu.
+* Finishing requirements for Sprint 4
+  * Added Network.py to manage broadcasting/receiving from localhost on ports 7500 and 7501.
+  * Modified GameAction to be able to dynamically push events, as well as modified GameAction aesthetics.
+  * Updated Play Game screen to be able to generate network IDs and dispatch to Scoreboard.
+  * Modified Scoreboard to accommodate network IDs, as well as add score to a player based on ID, sort the player based on score, and update team score.
+  * Added TrafficGenerator.py to dynamically create events and broadcast to localhost port 7501 (press f4 on Play Game screen to start traffic generator).
+* **LIMITATIONS AND OTHER INFORMATION**
+  * If using professor's provided traffic generator, an invalid ID will cause the program to crash. The Network receiver does not currently handle invalid received data
+  * Wait Timer reduced to 10 seconds for debugging
 
 **MAJOR BUGS ARE TO BE EXPECTED**
 
