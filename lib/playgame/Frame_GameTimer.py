@@ -12,7 +12,6 @@ class Frame_GameTimer(AppObject):
         self.floatTimeUntil = 0.0
         self.floatLastUpdatedTime = 0.0
         self.floatTimePausedRemaining = 0.0
-        self.intIDAfter = 0
         self.createSelf()
         
     def createSelf(self):
@@ -49,7 +48,6 @@ class Frame_GameTimer(AppObject):
             elif int(floatTimeRemaining) != int(self.floatLastUpdatedTime):
                 strTimeRemaining = self.getFormattedTimeStr(floatTimeRemaining)
                 self.updateTimerStrLabel(strTimeRemaining)
-                self.intIDAfter = self.root.after(1, self.updateTimer)
                 
     def getTimeRemaining(self):
         if self.boolIsTimerPaused:
@@ -94,11 +92,9 @@ class Frame_GameTimer(AppObject):
             self.floatTimeUntil = time.time() + starttime
             self.boolIsTimerActive = True
             self.boolHasTimerFinished = False
-            self.intIDAfter = self.root.after(1, self.updateTimer)
             
     def stopTimer(self):
         if self.boolIsTimerActive:
             self.updateTimerStrLabel("0:00")
             self.boolHasTimerFinished = True
             self.boolIsTimerActive = False
-            self.root.after_cancel(self.intIDAfter)

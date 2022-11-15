@@ -43,6 +43,25 @@ class Frame_Scoreboard(AppObject):
         self.frameTeamGreen.grid(column=1, row=0, padx=(20,10), sticky="NSEW")
         self.frameTeamGreen.gridify()
         
-    def setPlayersUsingList(self, listPlayers):
-        self.frameTeamRed.setPlayersUsingList(listPlayers[0])
-        self.frameTeamGreen.setPlayersUsingList(listPlayers[1])
+    def getCodenameFromID(self, intID):
+        if intID <= 14:
+            return self.frameTeamRed.getCodenameFromID(intID)
+        else:
+            return self.frameTeamGreen.getCodenameFromID(intID)
+            
+    def getValidListIntID(self):
+        listIntRed = self.frameTeamRed.getValidListIntID()
+        listIntGreen = self.frameTeamGreen.getValidListIntID()
+        return [listIntRed, listIntGreen]
+        
+    def setPlayersUsingList(self, listPlayers, listIntID=None):
+        if listIntID is not None:
+            self.frameTeamRed.setPlayersUsingList(listPlayers[0], listIntID[0])
+            self.frameTeamGreen.setPlayersUsingList(listPlayers[1], listIntID[1])
+        else:
+            self.frameTeamRed.setPlayersUsingList(listPlayers[0])
+            self.frameTeamGreen.setPlayersUsingList(listPlayers[1])
+            
+    def resetScores(self):
+        self.frameTeamRed.resetScores()
+        self.frameTeamGreen.resetScores()

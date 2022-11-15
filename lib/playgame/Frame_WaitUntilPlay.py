@@ -71,11 +71,10 @@ class Frame_WaitUntilPlay(Menu):
     def getTimeRemaining(self):
         return self.intTimeRemaining
         
-    def beginCount(self, counttime=30.0):
+    def beginCount(self, counttime=5.0):
         print("Beginning count with counttime: {}".format(counttime))
         self.timeUntil = time.time() + counttime
         self.resetToDefault()
-        self.idRootAfter = self.root.after(1, self.updateCount)
         self.boolIsCountActive = True
         
     def pauseCount(self):
@@ -96,25 +95,22 @@ class Frame_WaitUntilPlay(Menu):
             self.labelHead["text"] = "Game imminent! \nStarting in..."
             self.labelTimer["fg"] = "#ff6666"
         if not self.boolIsPaused:
-            if intTimeRemaining > 0.0:
-                self.root.after_cancel(self.idRootAfter)
+            if intTimeRemaining > 1.0:
                 self.labelTimer["text"] = str(self.timeUntil - time.time())[:5]
                 self.root.update()
-                self.idRootAfter = self.root.after(1, self.updateCount)
-            else:
-                self.root.after_cancel(self.idRootAfter)
+            elif intTimeRemaining <= 1.0:
                 self.labelHead["text"] = ""
                 self.labelTimer["font"] = (self.strDefaultFont, 72)
                 self.labelTimer["text"] = "BEGIN!"
-                print("BEGIN!")
+                #print("BEGIN!")
                 self.root.update()
-                self.idRootAfter = self.root.after(1000, self.endCountInternal)
+            if intTimeRemaining <= 0.0:
+                self.endCountInternal()
                 
     def endCountInternal(self):
         self.endCount(True)
         
     def endCount(self, boolCalledInternally=False):
-        self.root.after_cancel(self.idRootAfter)
         self.resetToDefault()
         self.hideSelf()
         self.boolIsCountActive = False

@@ -5,6 +5,8 @@ from lib.Frame_FKeys import *
 from lib.playgame.Frame_GameBoard import *
 from lib.playgame.Frame_WaitUntilPlay import *
 from lib.playgame.Menu_MoveToEditConfirm import *
+from lib.playgame.TrafficGenerator import *
+from lib.Network import *
 
 class Screen_PlayGame(AppObject):
     MENU_MAIN = 0
@@ -15,6 +17,13 @@ class Screen_PlayGame(AppObject):
         
         self.intMenu = self.MENU_MAIN
         self.methodMoveToEdit = None
+        self.intIDAfter = 0
+        
+        self.network = Network()
+        self.trafficGenerator = TrafficGenerator()
+        self.trafficGenerator.bindBroadcastingSocket(self.network.getReceivingSocket())
+        
+        self.network.startThread()
         
         self.createScreen()
         self.gridify()
@@ -51,6 +60,7 @@ class Screen_PlayGame(AppObject):
         self.frameFKeys = Frame_FKeys(self)
         self.frameFKeys.clearAllKeyText()
         self.frameFKeys.setKeyText(5, "F5 \nMove to \nEdit Game", 12)
+        self.frameFKeys.setKeyText(4, "F4 \n(Debug)\nSimulator", 12)
         
     def createMenuMoveToEditConfirm(self):
         self.menuMoveToEditConfirm = Menu_MoveToEditConfirm(self, self.bindYes_MoveToEdit, self.bindNo_MoveToEdit)
@@ -103,6 +113,7 @@ class Screen_PlayGame(AppObject):
         else:
             self.intMenu = self.MENU_MAIN
         self.showSelf()
+        self.updateScreen()
             
     def openMoveToEditMenu(self):
         self.intMenu = self.MENU_BACKTOEDIT
@@ -120,14 +131,77 @@ class Screen_PlayGame(AppObject):
             self.menuMoveToEditConfirm.setTimerPausedHead(strFormattedTimeRemaining)
         self.root.update()
         
+    def updateHitEventByLastTrans(self):
+        if self.network.hasNewTransmission():
+            lastTransmission = self.network.getLastTransmission()
+            listID = lastTransmission.split(":")
+            self.updateHitEvent(int(listID[0]), int(listID[1]))
+        
+    def updateScreen(self):
+        if self.frameGameboard.frameGameTimer.isTimerActive() and not self.frameGameboard.frameGameTimer.isTimerPaused():
+            self.updateHitEventByLastTrans()
+            self.frameGameboard.frameGameTimer.updateTimer()
+            self.intIDAfter = self.root.after(1, self.updateScreen)
+        elif self.frameWaitUntilPlay.isCountActive() and not self.frameWaitUntilPlay.isPaused():
+            self.frameWaitUntilPlay.updateCount()
+            self.intIDAfter = self.root.after(1, self.updateScreen)
+            
+    def updateHitEvent(self, intIDFrom, intIDTo):
+        charFromColor = 'r'
+        if intIDFrom >= 15:
+            charFromColor = 'g'
+        charToColor = 'r'
+        if intIDTo >= 15:
+            charToColor = 'g'
+        strPlayerFrom = self.frameGameboard.getCodenameFromID(intIDFrom)
+        print("strPlayerFrom: {}".format(strPlayerFrom))
+        strPlayerTo = self.frameGameboard.getCodenameFromID(intIDTo)
+        print("strPlayerTo: {}".format(strPlayerTo))
+        self.frameGameboard.frameGameAction.pushEvent(
+                                    charFromColor, strPlayerFrom,
+                                    charToColor, strPlayerTo)
+        if intIDFrom < 15:
+            self.frameGameboard.frameScoreboard.frameTeamRed.updatePlayerScore(intIDFrom,10)
+        else:
+            self.frameGameboard.frameScoreboard.frameTeamGreen.updatePlayerScore(intIDFrom,10)
+            
+            
+    def getGeneratedIDList(self):
+        listIntID = [[None]*15 for i in range(2)]
+        for i in range(0,15):
+            listIntID[0][i]=i
+            listIntID[1][i]=i+15
+        return listIntID
+        
     def setPlayersUsingList(self, listPlayers):
-        self.frameGameboard.setPlayersUsingList(listPlayers)
+        listIntID = self.getGeneratedIDList()
+        print(listPlayers)
+        self.frameGameboard.setPlayersUsingList(listPlayers, listIntID)
+        listOfListInt = self.frameGameboard.getValidListIntID()
+        print(listOfListInt)
+        self.trafficGenerator.setIDList(listOfListInt[0], listOfListInt[1])
+    
+    def isTrafficGeneratorRunning(self):
+        return self.trafficGenerator.isRunning()
+        
+    def startTrafficGenerator(self):
+        self.trafficGenerator.startThread()
+    
+    def endTrafficGenerator(self):
+        self.trafficGenerator.stopThread()
+        
+    def resetScoreboard(self):
+        self.frameGameboard.resetScoreboard()
+        
+    def clearGameAction(self):
+        self.frameGameboard.clearGameAction()
         
     def startWaitTimer(self):
         self.intMenu = self.MENU_WAITSTART
         self.showSelf()
         self.frameWaitUntilPlay.showSelf()
         self.frameWaitUntilPlay.beginCount()
+        self.updateScreen()
         
     def endWaitTimer(self):
         self.frameWaitUntilPlay.endCount()

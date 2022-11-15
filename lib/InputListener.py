@@ -1,3 +1,4 @@
+import random
 from pynput import keyboard
 from lib.AppState import *
 from lib.editgame.Screen_EditGame import *
@@ -75,9 +76,38 @@ class InputListener:
         if key == keyboard.Key.esc:
             self.screen_EditGame.closeAllMenus()
             
+    def debug_playgame_RNDEvent_NoCon(self):
+        intRandomColor = random.randint(1,2)
+        strRandomForenameTo = self.debug_playgame_RNDEvent.listStrForenames[random.randint(0,2)]
+        strRandomLastnameTo = self.debug_playgame_RNDEvent.listStrLastnames[random.randint(0,2)]
+        strRandomForenameFrom = self.debug_playgame_RNDEvent.listStrForenames[random.randint(0,2)]
+        strRandomLastnameFrom = self.debug_playgame_RNDEvent.listStrLastnames[random.randint(0,2)]
+        strColorFrom = "R"
+        strColorTo = "G"
+        if intRandomColor == 2:
+            strColorFrom = "G"
+            strColorTo = "R"
+        self.screen_PlayGame.frameGameboard.frameGameAction.pushEvent(
+                                    strColorFrom, strRandomForenameFrom+strRandomLastnameFrom,
+                                    strColorTo,strRandomForenameTo+strRandomLastnameTo)
+    debug_playgame_RNDEvent_NoCon.listStrForenames = ["Strawberry", "Blueberry", "Keylime"]
+    debug_playgame_RNDEvent_NoCon.listStrLastnames = ["Bagel","Milkshake", "Pie"]
+        
+    def debug_playgame_RNDEvent_Con(self):
+        intPlayerFromID = random.randint(0,29)
+        intPlayerToID = random.randint(0,14)
+        if intPlayerFromID < 15:
+            intPlayerToID = random.randint(15,29)
+        self.screen_PlayGame.updateHitEvent(intPlayerFromID, intPlayerToID)
+            
     def playgame_Listen(self, key):
         if key == keyboard.Key.f5:
             if self.screen_PlayGame.getMenuState() == Screen_PlayGame.MENU_MAIN or self.screen_PlayGame.getMenuState() == Screen_PlayGame.MENU_WAITSTART:
                 self.screen_PlayGame.openMoveToEditMenu()
         if key == keyboard.Key.esc:
             self.screen_PlayGame.closeMoveToEditMenu()
+        if key == keyboard.Key.f4:
+            if self.screen_PlayGame.isTrafficGeneratorRunning() is False:
+                self.screen_PlayGame.startTrafficGenerator()
+        #if key == keyboard.Key.space:
+        #    self.debug_playgame_RNDEvent_Con()
