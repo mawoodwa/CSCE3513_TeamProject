@@ -48,9 +48,9 @@ class Network:
         
     def receiveUDP(self):
         udpData, udpAddress = self.udp_socket_Rec.recvfrom(1024)
-        print("Received from {}: {}".format(udpAddress, udpData))
+        #print("Received from {}: {}".format(udpAddress, udpData))
         self.strLastTransmission = udpData.decode()
-        print("\tFormatted data: {}".format(self.strLastTransmission))
+        #print("\tFormatted data: {}".format(self.strLastTransmission))
         self.boolHasNewTransmission = True
             
     def getPlayerHit(self, transmission):
@@ -61,5 +61,5 @@ class Network:
         
     def broadcastUDP(self, strIDPlayerHit):
         udpData = str(strIDPlayerHit).encode() # Ensure str format
-        print("Broadcasting to {}:{}: {}".format(self.udp_IP, self.udp_PORT_BROAD, udpData))
+        #print("Broadcasting to {}:{}: {}".format(self.udp_IP, self.udp_PORT_BROAD, udpData))
         self.udp_socket_Broad.sendto(udpData, (self.udp_IP, self.udp_PORT_BROAD))

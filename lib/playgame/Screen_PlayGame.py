@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 from tkinter import ttk
 from lib.AppObject import *
@@ -18,6 +19,10 @@ class Screen_PlayGame(AppObject):
         self.intMenu = self.MENU_MAIN
         self.methodMoveToEdit = None
         self.intIDAfter = 0
+        self.floatHighScoreFlashLastTime = 0.0
+        
+        self.listValidRedIDs = []
+        self.listValidGreenIDs = []
         
         self.network = Network()
         self.trafficGenerator = TrafficGenerator()
@@ -141,6 +146,9 @@ class Screen_PlayGame(AppObject):
         if self.frameGameboard.frameGameTimer.isTimerActive() and not self.frameGameboard.frameGameTimer.isTimerPaused():
             self.updateHitEventByLastTrans()
             self.frameGameboard.frameGameTimer.updateTimer()
+            if abs(time.time() - self.floatHighScoreFlashLastTime) >= 0.25:
+                self.flashTeamScore()
+                self.floatHighScoreFlashLastTime = time.time()
             self.intIDAfter = self.root.after(1, self.updateScreen)
         elif self.frameWaitUntilPlay.isCountActive() and not self.frameWaitUntilPlay.isPaused():
             self.frameWaitUntilPlay.updateCount()
@@ -153,19 +161,31 @@ class Screen_PlayGame(AppObject):
         charToColor = 'r'
         if intIDTo >= 15:
             charToColor = 'g'
-        strPlayerFrom = self.frameGameboard.getCodenameFromID(intIDFrom)
-        print("strPlayerFrom: {}".format(strPlayerFrom))
-        strPlayerTo = self.frameGameboard.getCodenameFromID(intIDTo)
-        print("strPlayerTo: {}".format(strPlayerTo))
-        self.frameGameboard.frameGameAction.pushEvent(
-                                    charFromColor, strPlayerFrom,
-                                    charToColor, strPlayerTo)
-        if intIDFrom < 15:
-            self.frameGameboard.frameScoreboard.frameTeamRed.updatePlayerScore(intIDFrom,10)
+        if charFromColor == charToColor:
+            print("Both IDs from same color! Ignoring...")
+        elif self.isValidID(charFromColor, intIDFrom) == False or self.isValidID(charToColor, intIDTo) == False:
+            print("updateHitEvent: Error - One or more invalid IDs given!")
+            if self.isValidID(charFromColor, intIDFrom) == False:
+                print("\tID: {} is invalid for given team color!".format(intIDFrom))
+            if self.isValidID(charToColor, intIDTo) == False:
+                print("\tID: {} is invalid for given team color!".format(intIDTo))
         else:
-            self.frameGameboard.frameScoreboard.frameTeamGreen.updatePlayerScore(intIDFrom,10)
+            strPlayerFrom = self.frameGameboard.getCodenameFromID(intIDFrom)
+            #print("strPlayerFrom: {}".format(strPlayerFrom))
+            strPlayerTo = self.frameGameboard.getCodenameFromID(intIDTo)
+            #print("strPlayerTo: {}".format(strPlayerTo))
+            self.frameGameboard.frameGameAction.pushEvent(
+                                        charFromColor, strPlayerFrom,
+                                        charToColor, strPlayerTo)
+            if intIDFrom < 15:
+                self.frameGameboard.frameScoreboard.frameTeamRed.updatePlayerScore(intIDFrom,10)
+            else:
+                self.frameGameboard.frameScoreboard.frameTeamGreen.updatePlayerScore(intIDFrom,10)
             
-            
+    def flashTeamScore(self):
+        charHighestTeam = self.frameGameboard.frameScoreboard.getListHighestTeamScore()[0]
+        self.frameGameboard.frameScoreboard.flashTeamScore(charHighestTeam)
+    
     def getGeneratedIDList(self):
         listIntID = [[None]*15 for i in range(2)]
         for i in range(0,15):
@@ -180,6 +200,18 @@ class Screen_PlayGame(AppObject):
         listOfListInt = self.frameGameboard.getValidListIntID()
         print(listOfListInt)
         self.trafficGenerator.setIDList(listOfListInt[0], listOfListInt[1])
+        
+    def setValidIDsFromScoreboard(self):
+        self.listValidRedIDs = self.frameGameboard.frameScoreboard.getValidIDList_RedTeam()
+        self.listValidGreenIDs = self.frameGameboard.frameScoreboard.getValidIDList_GreenTeam()
+        
+    def isValidID(self, charTeam, intID):
+        if charTeam.upper() == "R":
+            return (intID in self.listValidRedIDs)
+        elif charTeam.upper() == "G":
+            return (intID in self.listValidGreenIDs)
+        else:
+            return False
     
     def isTrafficGeneratorRunning(self):
         return self.trafficGenerator.isRunning()
@@ -201,6 +233,7 @@ class Screen_PlayGame(AppObject):
         self.showSelf()
         self.frameWaitUntilPlay.showSelf()
         self.frameWaitUntilPlay.beginCount()
+        self.setValidIDsFromScoreboard()
         self.updateScreen()
         
     def endWaitTimer(self):
@@ -209,10 +242,12 @@ class Screen_PlayGame(AppObject):
         
     def startGameTimer(self):
         self.frameGameboard.frameGameTimer.startTimer()
+        self.floatHighScoreFlashLastTime = time.time()
         
     def resetGameTimer(self):
         self.frameGameboard.frameGameTimer.stopTimer()
         self.frameGameboard.frameGameTimer.updateTimerStrLabel("6:00")
+        self.floatHighScoreFlashLastTime = 0.0
         
     def bind_MoveToEdit(self, method):
         self.methodMoveToEdit = method

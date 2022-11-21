@@ -49,7 +49,7 @@ class TrafficGenerator:
     def broadcastUDP(self, intIDPlayerFrom, intIDPlayerTo):
         strData = str(intIDPlayerFrom) + ":" + str(intIDPlayerTo)
         udpData = strData.encode()
-        print("Broadcasting to {}:{}: {}".format(self.udp_IP, self.udp_PORT_BROAD, udpData))
+        #print("Broadcasting to {}:{}: {}".format(self.udp_IP, self.udp_PORT_BROAD, udpData))
         self.udp_socket_Broad.sendto(udpData, (self.udp_IP, self.udp_PORT_BROAD))
         
     def methodThread_loop(self):

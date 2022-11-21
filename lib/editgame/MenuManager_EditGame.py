@@ -257,7 +257,7 @@ class MenuManager_EditGame(AppObject):
                 self.database.updateUsingId(self.listPlayerInfo)
                 self.database.commit()
         rows = self.database.getAllRows()
-        print(rows)
+        #print(rows)
         self.addPlayer(self.listPlayerInfo[self.INDEX_PINFO_FNAME] + " " 
                         + self.listPlayerInfo[self.INDEX_PINFO_LNAME],
                         self.listPlayerInfo[self.INDEX_PINFO_CODE])

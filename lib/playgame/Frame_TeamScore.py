@@ -11,6 +11,8 @@ class Frame_TeamScore(AppObject):
         self.strTeamName = "RED TEAM"
         self.strTeamColor = "#ff6666" # Light Red
         self.strTopTeamColor = "#ff0000"
+        self.boolIsFlashing = False
+        self.strTeamScoreFlashingColor = "#ff0000"
         
     def setMaxTopPlayers(self, intMax):
         self.intMaxTopPlayers = intMax
@@ -23,6 +25,9 @@ class Frame_TeamScore(AppObject):
         
     def setTopTeamColor(self, strColor):
         self.strTopTeamColor = strColor
+        
+    def setTeamScoreFlashingColor(self, strColor):
+        self.strTeamScoreFlashingColor = strColor
         
     def createSelf(self):
         strBGColor = "#000000"
@@ -120,12 +125,31 @@ class Frame_TeamScore(AppObject):
                 else:
                     self.setPlayer(intCurrentLabel, listPlayers[i][1], 0)
                 intCurrentLabel += 1
+                
+    def alternateTeamScoreColor(self):
+        if self.boolIsFlashing == True:
+            self.setTeamScoreColorToDefault()
+        else:
+            self.setTeamScoreColorToFlashing()
+        
+    def setTeamScoreColorToDefault(self):
+        self.boolIsFlashing = False
+        self.labelTeamScoreHead["fg"] = self.strTeamColor
+        self.labelTeamScoreAmount["fg"] = self.strTeamColor
+        
+    def setTeamScoreColorToFlashing(self):
+        self.boolIsFlashing = True
+        self.labelTeamScoreHead["fg"] = self.strTeamScoreFlashingColor
+        self.labelTeamScoreAmount["fg"] = self.strTeamScoreFlashingColor   
     
     def getIndexOfID(self, intID):
         return self.listIntPlayerID.index(intID)
         
     def getCodenameFromID(self, intID):
         return self.listStrPlayerNames[self.listIntPlayerID.index(intID)]
+        
+    def getTeamScore(self):
+        return int(self.labelTeamScoreAmount["text"])
     
     def updatePlayerScore(self, intID, scoreAdd):
         intIndexGivenID = self.getIndexOfID(intID)
@@ -134,13 +158,13 @@ class Frame_TeamScore(AppObject):
         
         intIndexNewPos = 0
         for i in range(intIndexGivenID-1, -1, -1):
-            if intNewScore < int(self.labelTopScore[i]["text"]):
+            if intNewScore <= int(self.labelTopScore[i]["text"]):
                 intIndexNewPos = i+1
                 break
                 
         for i in range(intIndexGivenID, intIndexNewPos,-1):
             self.swapPlayers(i, i-1)
-        print("(intIndexGivenID, intIndexNewPos): {}, {}".format(intIndexGivenID, intIndexNewPos))
+        #print("(intIndexGivenID, intIndexNewPos): {}, {}".format(intIndexGivenID, intIndexNewPos))
         self.labelTeamScoreAmount["text"] = str(int(self.labelTeamScoreAmount["text"])+scoreAdd)
                 
     def clearAllPlayers(self):
