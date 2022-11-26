@@ -107,10 +107,10 @@ class Frame_TeamBoxes(AppObject):
         
     def setArrowPos(self, intTeam, intEntry):
         if intTeam != self.REDARROWPOS and intTeam != self.GREENARROWPOS:
-            raise Exception("Frame_TeamBoxes: Invalid intTeam passed to setArrowPos!")
+            print("Frame_TeamBoxes: Invalid intTeam passed to setArrowPos!")
         else:
             if intEntry < 0 or intEntry >= self.intPlayerEntries:
-                raise Exception("Frame_TeamBoxes: Invalid intEntry passed to setArrowPos!")
+                print("Frame_TeamBoxes: Invalid intEntry passed to setArrowPos!")
             else:
                 self.removeArrowAtPos()
                 self.listArrowPos[self.INDEX_TEAM] = intTeam
@@ -124,15 +124,24 @@ class Frame_TeamBoxes(AppObject):
             if newPosY >= 0 and newPosY < self.intPlayerEntries:
                 self.setArrowPos(newPosX, newPosY)
             else:
-                raise Exception("Frame_TeamBoxes: Invalid intOffsetY passed to moveArrow!")
+                print("Frame_TeamBoxes: Invalid intOffsetY passed to moveArrow!")
         else:
-            raise Exception("Frame_TeamBoxes: Invalid intOffsetX passed to moveArrow!")
+            print("Frame_TeamBoxes: Invalid intOffsetX passed to moveArrow!")
+            
+    def getPlayerIDAtArrow(self):
+        if self.listArrowPos[self.INDEX_TEAM] == self.REDARROWPOS:
+            return self.frameTeamRed.getPlayerIDAtArrow()
+        else:
+            return self.frameTeamGreen.getPlayerIDAtArrow()
             
     def getPlayerAtArrow(self):
         if self.listArrowPos[self.INDEX_TEAM] == self.REDARROWPOS:
             return self.frameTeamRed.getPlayerAtArrow()
         else:
             return self.frameTeamGreen.getPlayerAtArrow()
+            
+    def getPlayerIDList(self):
+        return [self.frameTeamRed.getPlayerIDList(), self.frameTeamGreen.getPlayerIDList()]
     
     def getPlayerList(self):
         return [self.frameTeamRed.getPlayerList(), self.frameTeamGreen.getPlayerList()]
@@ -140,11 +149,14 @@ class Frame_TeamBoxes(AppObject):
     def getPlayerCount(self):
         return [self.frameTeamRed.getPlayerCount(), self.frameTeamGreen.getPlayerCount()]
             
-    def addPlayer(self, strPlayer, strCode):
+    def addPlayer(self, intID, strPlayer, strCode):
         if self.listArrowPos[self.INDEX_TEAM] == self.REDARROWPOS:
-            self.frameTeamRed.addPlayerAtArrow(strPlayer, strCode)
+            self.frameTeamRed.addPlayerAtArrow(intID, strPlayer, strCode)
         else:
-            self.frameTeamGreen.addPlayerAtArrow(strPlayer, strCode)
+            self.frameTeamGreen.addPlayerAtArrow(intID, strPlayer, strCode)
+            
+    def isIDAlreadyEntered(self, intID):
+        return (self.frameTeamRed.isIDAlreadyEntered(intID) or self.frameTeamGreen.isIDAlreadyEntered(intID))
             
     def deletePlayer(self):
         if self.listArrowPos[self.INDEX_TEAM] == self.REDARROWPOS:

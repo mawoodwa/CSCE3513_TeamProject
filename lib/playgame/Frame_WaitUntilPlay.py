@@ -71,11 +71,10 @@ class Frame_WaitUntilPlay(Menu):
     def getTimeRemaining(self):
         return self.intTimeRemaining
         
-    def beginCount(self, counttime=15.0):
+    def beginCount(self, counttime=5.0):
         print("Beginning count with counttime: {}".format(counttime))
         self.timeUntil = time.time() + counttime
         self.resetToDefault()
-        self.idRootAfter = self.root.after(1, self.updateCount)
         self.boolIsCountActive = True
         
     def pauseCount(self):
@@ -93,26 +92,31 @@ class Frame_WaitUntilPlay(Menu):
         intTimeRemaining = self.timeUntil - time.time()
         if intTimeRemaining < 10.0 and self.labelTimer["bg"] != "#ff6666":
             self.labelHead["fg"] = "#ff6666"
-            self.labelHead["text"] = "Game imminent! Starting in..."
+            self.labelHead["text"] = "Game imminent! \nStarting in..."
             self.labelTimer["fg"] = "#ff6666"
         if not self.boolIsPaused:
-            if intTimeRemaining > 0.0:
-                self.root.after_cancel(self.idRootAfter)
+            if intTimeRemaining > 1.0:
                 self.labelTimer["text"] = str(self.timeUntil - time.time())[:5]
                 self.root.update()
-                self.idRootAfter = self.root.after(1, self.updateCount)
-            else:
-                self.root.after_cancel(self.idRootAfter)
+            elif intTimeRemaining <= 1.0:
                 self.labelHead["text"] = ""
                 self.labelTimer["font"] = (self.strDefaultFont, 72)
                 self.labelTimer["text"] = "BEGIN!"
-                print("BEGIN!")
+                #print("BEGIN!")
                 self.root.update()
-                self.idRootAfter = self.root.after(1000, self.endCount)
+            if intTimeRemaining <= 0.0:
+                self.endCountInternal()
+                
+    def endCountInternal(self):
+        self.endCount(True)
         
-    def endCount(self):
-        self.root.after_cancel(self.idRootAfter)
+    def endCount(self, boolCalledInternally=False):
         self.resetToDefault()
         self.hideSelf()
         self.boolIsCountActive = False
         self.boolIsPaused = False
+        if boolCalledInternally:
+            self.methodAfterFinished()
+        
+    def bindMethodAfterFinished(self, methodAfterFinished):
+        self.methodAfterFinished = methodAfterFinished

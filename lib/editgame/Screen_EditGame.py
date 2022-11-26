@@ -53,6 +53,7 @@ class Screen_EditGame(AppObject):
     def createFKeys(self):
         self.frameFKeys = Frame_FKeys(self)
         self.frameFKeys.clearAllKeyText()
+        self.frameFKeys.setKeyText(4,"F4 \n(Debug) \nFill Players")
         self.frameFKeys.setKeyText(5,"F5 \nMove to \nPlay")
         self.frameFKeys.setKeyText(7,"F7 \nDelete DB \nEntries")
         
@@ -108,6 +109,9 @@ class Screen_EditGame(AppObject):
     def getMenuState(self):
         return self.menuManager.getMenuState()
         
+    def getPlayerIDList(self):
+        return self.frameTeamBoxes.getPlayerIDList()
+        
     def getPlayerList(self):
         return self.frameTeamBoxes.getPlayerList()
 
@@ -129,6 +133,9 @@ class Screen_EditGame(AppObject):
         
     def bind_ChangeToPlay(self, mFunc):
         self.menuManager.bind_ChangeToPlay(mFunc)
+        
+    def openAddPlayerID(self):
+        self.menuManager.openAddPlayerID()
             
     def openAddPlayerName(self):
         self.menuManager.openAddPlayerName()
@@ -142,6 +149,10 @@ class Screen_EditGame(AppObject):
     def openMoveToPlayConfirm(self):
         self.menuManager.showSelf()
         self.menuManager.openMoveToPlayConfirm()
+        
+    def openDebugFillPlayers(self):
+        self.menuManager.showSelf()
+        self.menuManager.openDebugFillPlayers()
         
     def switchToMainMenu(self):
         self.menuManager.switchToMainMenu()

@@ -23,8 +23,20 @@ class Frame_GameBoard(AppObject):
         self.frameGameTimer = Frame_GameTimer(self)
         self.propagateWidget(self.frameGameTimer)
         
-    def setPlayersUsingList(self, listPlayers):
-        self.frameScoreboard.setPlayersUsingList(listPlayers)
+    def setPlayersUsingList(self, listPlayers, listIntID=None):
+        self.frameScoreboard.setPlayersUsingList(listPlayers, listIntID)
+        
+    def getCodenameFromID(self, intID, charTeam):
+        return self.frameScoreboard.getCodenameFromID(intID, charTeam)
+        
+    def getValidListIntID(self):
+        return self.frameScoreboard.getValidListIntID()
+        
+    def clearGameAction(self):
+        self.frameGameAction.clearEvents()
+        
+    def resetScoreboard(self):
+        self.frameScoreboard.resetScores()
         
     def gridify(self):
         intBackgroundCols = 10

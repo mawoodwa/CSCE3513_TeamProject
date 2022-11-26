@@ -2,20 +2,18 @@ import tkinter as tk
 from tkinter import ttk
 from lib.Menu import *
 
-class Menu_UsePrevCodename(Menu):
+class Menu_DebugFillPlayers(Menu):
     def __init__(self, tkRoot, mSubmitYes, mSubmitNo):
         super().__init__(tkRoot)
         
         self.methodSubmitYes = mSubmitYes
         self.methodSubmitNo = mSubmitNo
-        self.strPlayerCodename = ""
         self.createSelf()
         self.gridify()
 
     def enableSelf(self):
         self.tkraise()
         self.buttonSubmitYes["state"]="normal"
-        self.buttonSubmitYes.focus_set()
         self.buttonSubmitNo["state"]="normal"
         self.buttonSubmitYes.bind("<Return>",self.submitYes)
         self.buttonSubmitNo.bind("<Return>",self.submitNo)
@@ -31,10 +29,6 @@ class Menu_UsePrevCodename(Menu):
         
     def submitYes(self, event=None):
         self.methodSubmitYes()
-        
-    def setCodename(self, strCodename):
-        self.strPlayerCodename = strCodename
-        self.labelPlayerCodeName["text"] = "Player Code Name: " + self.strPlayerCodename
             
     def createSelf(self):
         strBorderColor = "#5b5bc3"
@@ -49,13 +43,10 @@ class Menu_UsePrevCodename(Menu):
         self.propagateWidget(self)
         self.frameInterior = tk.Frame(self, bg=strBGColor)
         self.labelHead = tk.Label(self.frameInterior,
-            text="Player Codename found!",
+            text="(DEBUG) Fill all player slots \nWARNING - This is a SLOW operation \nintended for debugging!",
             fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeHead))
-        self.labelPlayerCodeName = tk.Label(self.frameInterior,
-            text="Player Code Name: " + self.strPlayerCodename,
-            fg = strTextcolorMain, bg=strBGColor,font=(strFont,intTextsizeMain))
         self.labelHint = tk.Label(self.frameInterior,
-            text="Use previous Codename?\nIf No, you will be asked to enter a new codename.",
+            text="This will fill all 30 players slots with -\npreset names/codenames.\nThis operation is slow. \nAre you certain you wish to continue?",
             fg = strTextcolorMain, bg=strBGColor, font=(strFont,intTextsizeMain))
         self.buttonSubmitYes = tk.Button(self.frameInterior,
             text="Yes",
@@ -82,8 +73,7 @@ class Menu_UsePrevCodename(Menu):
             self.frameInterior.columnconfigure(i,weight=1,uniform="uniformIns")
         for i in range(intFrameInsPRows):
             self.frameInterior.rowconfigure(i,weight=1,uniform="uniformIns")
-        self.labelHead.grid(column=0,row=0,columnspan=intFrameInsPCols,rowspan=2,sticky="NSEW")
-        self.labelPlayerCodeName.grid(column=0,row=3,columnspan=intFrameInsPCols,rowspan=2,sticky="NSEW")
-        self.labelHint.grid(column=0,row=5,rowspan=2,columnspan=intFrameInsPCols,sticky="NSEW")
+        self.labelHead.grid(column=0,row=0,columnspan=intFrameInsPCols,rowspan=2,sticky="NEW")
+        self.labelHint.grid(column=0,row=5,rowspan=2,columnspan=intFrameInsPCols,sticky="NEW")
         self.buttonSubmitYes.grid(column=3,row=9,rowspan=2,columnspan=2,sticky="NSEW")
         self.buttonSubmitNo.grid(column=7,row=9,rowspan=2,columnspan=2,sticky="NSEW")
