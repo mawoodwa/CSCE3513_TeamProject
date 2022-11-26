@@ -1,4 +1,4 @@
-# Devtest Branch (11/20/22)
+# Devtest Branch (11/25/22)
 
 ## What's New?
 Some of the changes to this iteration are:
@@ -16,6 +16,13 @@ Some of the changes to this iteration are:
     * If both team scores are the same, neither team flashes. If one is higher than the higher, the team score will alternate between 2 colors every 0.25 seconds, flashing every 0.5 seconds
     * Currently, green team's 2 colors are very close to eachother and will need to be adjusted. It is difficult to tell when it is flashing.
   * Updated program to ignore invalid ID's received from localhost. This should fix the previous issue where an invalid ID using the professor's traffic generator would cause the program to crash.
+* Update (11/25/22)
+  * Edit Game screen now prompts user for ID rather than first/last name
+    * Every new player entry is now only concerned with ID/codename. Team asked professor on Tuesday and it sounds like first/last name is not required but a custom user input for ID/codename is. ID was previously auto-generated, now user input instead.
+    * Every new player entry will list "(blank)" in place of first/last name so that the Heroku database/python Database wrapper class does not need to be remade/altered.
+    * New IDs can range from 0 - 99,999.
+    * Game will prevent operator from entering in a player if their ID is already on the board. This is to prevent ID conflicts during the networking portion on the "Play Game" screen.
+  * Green team score on "Play Game" screen will flash a mid-cyan color if they have the highest team score.
   
 * **LIMITATIONS AND OTHER INFORMATION**
   * Wait Timer reduced to 5 seconds for debugging
