@@ -60,7 +60,7 @@ class InputListener:
             self.screen_EditGame.moveArrow(1,0)
             
         if key == keyboard.Key.insert:
-            self.screen_EditGame.openAddPlayerName()
+            self.screen_EditGame.openAddPlayerID()
         if key == keyboard.Key.delete:
             self.screen_EditGame.deletePlayer()
             

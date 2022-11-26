@@ -15,6 +15,7 @@ class Menu_UsePrevCodename(Menu):
     def enableSelf(self):
         self.tkraise()
         self.buttonSubmitYes["state"]="normal"
+        self.buttonSubmitYes.focus_set()
         self.buttonSubmitNo["state"]="normal"
         self.buttonSubmitYes.bind("<Return>",self.submitYes)
         self.buttonSubmitNo.bind("<Return>",self.submitNo)

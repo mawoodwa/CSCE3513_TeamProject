@@ -156,10 +156,10 @@ class Screen_PlayGame(AppObject):
             
     def updateHitEvent(self, intIDFrom, intIDTo):
         charFromColor = 'r'
-        if intIDFrom >= 15:
+        if intIDFrom in self.listOfListIntPlayerIDs[1]:
             charFromColor = 'g'
         charToColor = 'r'
-        if intIDTo >= 15:
+        if intIDTo in self.listOfListIntPlayerIDs[1]:
             charToColor = 'g'
         if charFromColor == charToColor:
             print("Both IDs from same color! Ignoring...")
@@ -170,14 +170,14 @@ class Screen_PlayGame(AppObject):
             if self.isValidID(charToColor, intIDTo) == False:
                 print("\tID: {} is invalid for given team color!".format(intIDTo))
         else:
-            strPlayerFrom = self.frameGameboard.getCodenameFromID(intIDFrom)
+            strPlayerFrom = self.frameGameboard.getCodenameFromID(intIDFrom, charFromColor)
             #print("strPlayerFrom: {}".format(strPlayerFrom))
-            strPlayerTo = self.frameGameboard.getCodenameFromID(intIDTo)
+            strPlayerTo = self.frameGameboard.getCodenameFromID(intIDTo, charToColor)
             #print("strPlayerTo: {}".format(strPlayerTo))
             self.frameGameboard.frameGameAction.pushEvent(
                                         charFromColor, strPlayerFrom,
                                         charToColor, strPlayerTo)
-            if intIDFrom < 15:
+            if intIDFrom in self.listOfListIntPlayerIDs[0]:
                 self.frameGameboard.frameScoreboard.frameTeamRed.updatePlayerScore(intIDFrom,10)
             else:
                 self.frameGameboard.frameScoreboard.frameTeamGreen.updatePlayerScore(intIDFrom,10)
@@ -193,13 +193,16 @@ class Screen_PlayGame(AppObject):
             listIntID[1][i]=i+15
         return listIntID
         
-    def setPlayersUsingList(self, listPlayers):
+    def setPlayersUsingList(self, listPlayers, listIDs):
         listIntID = self.getGeneratedIDList()
         print(listPlayers)
-        self.frameGameboard.setPlayersUsingList(listPlayers, listIntID)
-        listOfListInt = self.frameGameboard.getValidListIntID()
-        print(listOfListInt)
-        self.trafficGenerator.setIDList(listOfListInt[0], listOfListInt[1])
+        print(listIntID)
+        print(listIDs)
+        self.frameGameboard.setPlayersUsingList(listPlayers, listIDs)
+        self.listOfListIntPlayerIDs = self.frameGameboard.getValidListIntID()
+        print(self.listOfListIntPlayerIDs)
+        self.trafficGenerator.setIDList(self.listOfListIntPlayerIDs[0], 
+                                        self.listOfListIntPlayerIDs[1])
         
     def setValidIDsFromScoreboard(self):
         self.listValidRedIDs = self.frameGameboard.frameScoreboard.getValidIDList_RedTeam()

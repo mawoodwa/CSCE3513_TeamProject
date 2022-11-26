@@ -23,7 +23,7 @@ class Frame_Scoreboard(AppObject):
         self.frameTeamGreen.setTeamName("TEAM GREEN")
         self.frameTeamGreen.setTeamColor("#66ff66")
         self.frameTeamGreen.setTopTeamColor("#00ff00")
-        self.frameTeamGreen.setTeamScoreFlashingColor("#00ff00")
+        self.frameTeamGreen.setTeamScoreFlashingColor("#00ffc0")
         self.frameTeamGreen.createSelf()
         self.propagateWidget(self.frameTeamGreen)
         
@@ -41,8 +41,8 @@ class Frame_Scoreboard(AppObject):
         self.frameTeamGreen.grid(column=1, row=0, padx=(20,10), sticky="NSEW")
         self.frameTeamGreen.gridify()
         
-    def getCodenameFromID(self, intID):
-        if intID <= 14:
+    def getCodenameFromID(self, intID, charTeam):
+        if charTeam.upper() == "R":
             return self.frameTeamRed.getCodenameFromID(intID)
         else:
             return self.frameTeamGreen.getCodenameFromID(intID)

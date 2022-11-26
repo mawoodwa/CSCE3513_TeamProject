@@ -27,6 +27,7 @@ class Frame_EditTeam(AppObject):
         self.labelTeamName = tk.Label(self, text=strTeamName, fg=strTextColor, bg=strTeamHeadBG, font=(strFontStyle,intTeamHFontSize), borderwidth=2, relief="groove")
         self.propagateWidget(self.labelTeamName)
 
+        self.labelID = [None] * self.intPlayerEntries
         self.labelPlayerName = [None] * self.intPlayerEntries
         self.labelCodeName = [None] * self.intPlayerEntries
         self.checkboxC = [None] * self.intPlayerEntries
@@ -42,6 +43,7 @@ class Frame_EditTeam(AppObject):
                 fg=strTextColor, bg=strTeamColor,font=(strFontStyle,intCBoxFontSize),
                 onvalue=1,offvalue=0,
                 state="disabled",variable=self.checkboxVar[i]) 
+            self.labelID[i] = tk.Label(self, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             self.labelPlayerName[i] = tk.Label(self, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             self.labelCodeName[i] = tk.Label(self, bd=2,font=(strFontStyle,intEntryFontSize), anchor="w")
             
@@ -64,8 +66,9 @@ class Frame_EditTeam(AppObject):
         for i in range(self.intPlayerEntries):
             self.labelArrow[i].grid(column=0, row=i+1,sticky="E")
             self.checkboxC[i].grid(column=1, row=i+1)
-            self.labelPlayerName[i].grid(column=2, row=i+1,columnspan=4,padx=2,sticky="EW")
-            self.labelCodeName[i].grid(column=6, row=i+1,columnspan=4,padx=(2,10),sticky="EW")
+            self.labelID[i].grid(column=2, row=i+1,columnspan=2,padx=2,sticky="EW")
+            #self.labelPlayerName[i].grid(column=3, row=i+1,columnspan=3,padx=2,sticky="EW")
+            self.labelCodeName[i].grid(column=4, row=i+1,columnspan=7,padx=(2,10),sticky="EW")
    
     def setTeamColor(self, strColor):
         self.strTeamColor = strColor
@@ -76,6 +79,25 @@ class Frame_EditTeam(AppObject):
     def setPlayerEntries(self, intNum):
         self.intPlayerEntries = intNum
         
+    def isIDAlreadyEntered(self, intID):
+        for i in range(self.intPlayerEntries):
+            strRawPlayerID = self.labelID[i]["text"]
+            if strRawPlayerID != "":
+                strPlayerID = strRawPlayerID.split(" ")[1]
+                if int(strPlayerID) == intID:
+                    return True
+        return False
+        
+    def getPlayerIDAtArrow(self):
+        if self.intArrowPos == self.NO_ARROW:
+            return ""
+        else:
+            strRawPlayerID = self.labelID[self.intArrowPos]["text"]
+            if strRawPlayerID != "":
+                strPlayerID = strRawPlayerID.split()[1]
+                return strPlayerID
+            return strRawPlayerID
+        
     def getPlayerAtArrow(self):
         if self.intArrowPos == self.NO_ARROW:
             return ["",""]
@@ -84,6 +106,14 @@ class Frame_EditTeam(AppObject):
             if listStrPlayerName == [] or listStrPlayerName == None:
                 listStrPlayerName = ["",""]
             return [listStrPlayerName[0], listStrPlayerName[1]]
+            
+    def getPlayerIDList(self):
+        listPlayerIDs = [None] * self.intPlayerEntries
+        for i in range(self.intPlayerEntries):
+            listPlayerIDs[i] = self.labelID[i]["text"]
+            if self.labelID[i]["text"] != "":
+                listPlayerIDs[i] = int(self.labelID[i]["text"].split()[1])
+        return listPlayerIDs
             
     def getPlayerList(self):
         listPlayers = [None] * self.intPlayerEntries
@@ -99,17 +129,19 @@ class Frame_EditTeam(AppObject):
                 intCount += 1
         return intCount
         
-    def addPlayer(self, intArrowPos, strPlayer, strCode):
+    def addPlayer(self, intArrowPos, intID, strPlayer, strCode):
+        self.labelID[intArrowPos]["text"] = "ID: " + str(intID)
         self.labelPlayerName[intArrowPos]["text"] = strPlayer
         self.labelCodeName[intArrowPos]["text"] = strCode
         self.checkboxVar[intArrowPos].set(True)
         self.checkboxC[intArrowPos].select()
         
-    def addPlayerAtArrow(self, strPlayer, strCode):
+    def addPlayerAtArrow(self, intID, strPlayer, strCode):
         if self.intArrowPos != self.NO_ARROW:
-            self.addPlayer(self.intArrowPos, strPlayer, strCode)
+            self.addPlayer(self.intArrowPos, intID, strPlayer, strCode)
         
     def deletePlayer(self, intArrowPos):
+        self.labelID[intArrowPos]["text"] = ""
         self.labelPlayerName[intArrowPos]["text"] = ""
         self.labelCodeName[intArrowPos]["text"] = ""
         self.checkboxVar[intArrowPos].set(False)

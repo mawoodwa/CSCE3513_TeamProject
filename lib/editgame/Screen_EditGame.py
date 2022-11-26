@@ -109,6 +109,9 @@ class Screen_EditGame(AppObject):
     def getMenuState(self):
         return self.menuManager.getMenuState()
         
+    def getPlayerIDList(self):
+        return self.frameTeamBoxes.getPlayerIDList()
+        
     def getPlayerList(self):
         return self.frameTeamBoxes.getPlayerList()
 
@@ -130,6 +133,9 @@ class Screen_EditGame(AppObject):
         
     def bind_ChangeToPlay(self, mFunc):
         self.menuManager.bind_ChangeToPlay(mFunc)
+        
+    def openAddPlayerID(self):
+        self.menuManager.openAddPlayerID()
             
     def openAddPlayerName(self):
         self.menuManager.openAddPlayerName()

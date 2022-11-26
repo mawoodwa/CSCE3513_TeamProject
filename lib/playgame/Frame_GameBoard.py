@@ -26,8 +26,8 @@ class Frame_GameBoard(AppObject):
     def setPlayersUsingList(self, listPlayers, listIntID=None):
         self.frameScoreboard.setPlayersUsingList(listPlayers, listIntID)
         
-    def getCodenameFromID(self, intID):
-        return self.frameScoreboard.getCodenameFromID(intID)
+    def getCodenameFromID(self, intID, charTeam):
+        return self.frameScoreboard.getCodenameFromID(intID, charTeam)
         
     def getValidListIntID(self):
         return self.frameScoreboard.getValidListIntID()

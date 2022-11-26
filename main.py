@@ -168,7 +168,8 @@ class App(tk.Frame):
     def loadScreen_PlayGame(self):
         self.screen = self.screen_PlayGame
         listPlayers = self.screen_EditGame.getPlayerList()
-        self.screen.setPlayersUsingList(listPlayers)
+        listPlayerIDs = self.screen_EditGame.getPlayerIDList()
+        self.screen.setPlayersUsingList(listPlayers, listPlayerIDs)
         self.screen.showSelf()
         
     def unloadScreen_PlayGame(self):

@@ -125,6 +125,7 @@ class Frame_TeamScore(AppObject):
                 else:
                     self.setPlayer(intCurrentLabel, listPlayers[i][1], 0)
                 intCurrentLabel += 1
+        print(listIntID)
                 
     def alternateTeamScoreColor(self):
         if self.boolIsFlashing == True:
